@@ -66,9 +66,15 @@
   <div id="mobileOverlay" class="fixed inset-0 bg-ink-main/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
 
   <div class="max-w-[1400px] mx-auto px-4 pt-6">
-    <header class="text-center mb-6 mt-4 lg:mt-0">
+    <header class="text-center mb-4 mt-4 lg:mt-0">
       <h1 class="font-quran text-3xl md:text-4xl text-gold-700 mb-2">المُصۡحَفُ المُعَلِّمُ</h1>
       <div class="flex flex-wrap gap-2 justify-center mt-4" id="filtersContainer"></div>
+      
+      <!-- بطاقة شرح الحكم التجويدي المختار -->
+      <div id="ruleBriefCard" class="hidden max-w-2xl mx-auto mt-4 bg-surface p-3 rounded-xl border shadow-sm transition-all duration-300 text-right">
+        <h3 id="ruleBriefTitle" class="font-bold mb-1 text-sm md:text-base"></h3>
+        <p id="ruleBriefDesc" class="text-ink-muted text-xs md:text-sm leading-relaxed"></p>
+      </div>
     </header>
 
     <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
