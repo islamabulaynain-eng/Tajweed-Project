@@ -44,6 +44,7 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #E7C873; border-radius: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+    
     .word-token {
       display: inline-block;
       cursor: pointer;
@@ -56,32 +57,50 @@
 </head>
 <body class="font-cairo text-ink-main pb-10">
 
+  <!-- زر القائمة الجانبية للموبايل (يظهر فقط في الشاشات الصغيرة) -->
+  <button id="mobileMenuBtn" class="lg:hidden fixed top-4 right-4 z-[60] w-12 h-12 bg-surface border border-gold-300 text-gold-700 rounded-full shadow-lg flex items-center justify-center hover:bg-gold-50 transition-colors">
+    <i class="ph-bold ph-list text-2xl"></i>
+  </button>
+
+  <!-- خلفية مظللة عند فتح قائمة الموبايل -->
+  <div id="mobileOverlay" class="fixed inset-0 bg-ink-main/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity"></div>
+
   <div class="max-w-[1400px] mx-auto px-4 pt-6">
-    <header class="text-center mb-6">
+    <header class="text-center mb-6 mt-4 lg:mt-0">
       <h1 class="font-quran text-3xl md:text-4xl text-gold-700 mb-2">المُصۡحَفُ المُعَلِّمُ</h1>
       <div class="flex flex-wrap gap-2 justify-center mt-4" id="filtersContainer"></div>
     </header>
 
-    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
       
-      <aside class="lg:col-span-2 sticky top-6 bg-surface rounded-xl shadow-md border border-gold-200 overflow-hidden flex flex-col h-[70vh]">
-        <div class="bg-gold-50 p-3 border-b border-gold-200 text-center font-bold text-gold-700 flex items-center justify-center gap-2">
-          <i class="ph-duotone ph-list-numbers text-xl"></i> فهرس السور
+      <!-- 1. القائمة الجانبية اليمنى (فهرس السور) -->
+      <!-- تم تعديل الكلاسات لتصبح Drawer في الموبايل و Fixed Sidebar في الكمبيوتر -->
+      <aside id="surahIndexSidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 lg:w-auto transform translate-x-full lg:translate-x-0 transition-transform duration-300 lg:col-span-2 bg-surface lg:rounded-xl shadow-2xl lg:shadow-md border-l lg:border border-gold-200 overflow-hidden flex flex-col h-full lg:h-[70vh]">
+        <div class="bg-gold-50 p-4 lg:p-3 border-b border-gold-200 text-center font-bold text-gold-700 flex items-center justify-between lg:justify-center gap-2">
+          <div class="flex items-center gap-2">
+            <i class="ph-duotone ph-list-numbers text-xl"></i> فهرس السور
+          </div>
+          <button id="closeMobileMenuBtn" class="lg:hidden text-gold-600 hover:text-gold-700"><i class="ph-bold ph-x text-xl"></i></button>
         </div>
         <div id="surahList" class="flex-grow overflow-y-auto custom-scrollbar p-2 space-y-1">
           <div class="text-center text-sm text-ink-muted mt-10">جاري تحميل الفهرس...</div>
         </div>
       </aside>
 
-      <div class="lg:col-span-7 mushaf-frame rounded-xl p-6 md:p-10 relative min-h-[70vh]">
+      <!-- 2. إطار المصحف (الوسط) -->
+      <div class="lg:col-span-7 mushaf-frame rounded-xl p-4 md:p-10 relative min-h-[70vh]">
         <div class="absolute top-2 right-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
         <div class="absolute top-2 left-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
+        
         <div class="text-center border-b border-gold-200 pb-4 mb-6">
           <h2 id="currentSurahTitle" class="font-quran text-2xl md:text-3xl text-gold-600">...</h2>
         </div>
-        <div id="quranContainer" class="text-justify font-quran text-2xl md:text-[28px] text-ink-main leading-[2.5] select-none" style="text-align-last: center;"></div>
+        
+        <!-- تم إضافة max-w-[700px] للتحكم في عرض النص وضبط الفواصل -->
+        <div id="quranContainer" class="max-w-[700px] mx-auto text-justify font-quran text-[26px] md:text-[32px] text-ink-main leading-[2.5] select-none" style="text-align-last: center;"></div>
       </div>
 
+      <!-- 3. اللوحة الجانبية اليسرى (تفاصيل التجويد) -->
       <aside class="lg:col-span-3 sticky top-6 bg-surface rounded-xl shadow-md border border-gold-200 p-5 min-h-[70vh] flex flex-col">
         <div class="border-b border-gold-100 pb-3 mb-4 text-center">
           <h3 class="font-bold text-lg text-ink-main">الأحكام التجويدية</h3>
@@ -118,6 +137,7 @@
       ikhfa: { title: "الإخفاء", desc: "النطق بالحرف بصفة بين الإظهار والإدغام مع بقاء الغنة." }
     };
 
+    // عناصر الـ DOM
     const surahListContainer = document.getElementById('surahList');
     const quranContainer = document.getElementById('quranContainer');
     const currentSurahTitle = document.getElementById('currentSurahTitle');
@@ -126,6 +146,22 @@
     const activeWordDetails = document.getElementById('activeWordDetails');
     const selectedWordEl = document.getElementById('selectedWord');
     const rulesListEl = document.getElementById('rulesList');
+
+    // عناصر قائمة الموبايل
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+    const surahIndexSidebar = document.getElementById('surahIndexSidebar');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    // وظيفة فتح/إغلاق القائمة في الموبايل
+    function toggleMobileMenu() {
+      surahIndexSidebar.classList.toggle('translate-x-full');
+      mobileOverlay.classList.toggle('hidden');
+    }
+    
+    mobileMenuBtn.onclick = toggleMobileMenu;
+    closeMobileMenuBtn.onclick = toggleMobileMenu;
+    mobileOverlay.onclick = toggleMobileMenu;
 
     async function init() {
       renderFilters();
@@ -148,6 +184,8 @@
               currentSurah = chapter.id;
               loadSurah(currentSurah, chapter.name_arabic);
               updateSurahSelection(chapter.id);
+              // إغلاق القائمة في الموبايل بعد اختيار السورة
+              if(window.innerWidth < 1024) toggleMobileMenu();
             }
           };
           surahListContainer.appendChild(btn);
@@ -168,7 +206,7 @@
     }
 
     async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
-      quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10">جاري تحميل السورة...</div>';
+      quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
       currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
       closeWordDetails(); 
 
@@ -184,46 +222,67 @@
 
     function renderMushaf(verses) {
       quranContainer.innerHTML = '';
-      let currentLineNumber = -1;
-      let lineDiv = null;
-
+      
+      // تجميع الكلمات حسب الصفحة ثم حسب السطر
+      const pages = {};
+      
       verses.forEach(verse => {
         verse.words.forEach(word => {
           if (!word.text_uthmani && word.char_type_name !== 'end') return;
+          const p = word.page_number;
+          const l = word.line_number;
+          if (!pages[p]) pages[p] = {};
+          if (!pages[p][l]) pages[p][l] = [];
+          pages[p][l].push({ word, verse });
+        });
+      });
 
-          if (word.line_number !== currentLineNumber) {
-            currentLineNumber = word.line_number;
-            lineDiv = document.createElement('div');
-            lineDiv.className = 'flex flex-wrap justify-center md:justify-between items-center w-full min-h-[3rem] mb-2 leading-none';
-            if (word.line_number > 1) {
-              lineDiv.style.justifyContent = 'space-between';
-            } else {
-              lineDiv.style.justifyContent = 'center'; 
-            }
-            quranContainer.appendChild(lineDiv);
-          }
+      // رسم المصحف بناءً على الصفحات والأسطر المجمعة
+      Object.keys(pages).forEach((pageNum, index) => {
+        
+        // إضافة فاصل الصفحة (Page Break)
+        const pageBreak = document.createElement('div');
+        pageBreak.className = 'w-full border-b border-dashed border-gold-300 my-8 relative flex justify-center';
+        pageBreak.innerHTML = `<span class="absolute -top-3 bg-surface px-4 text-gold-600 text-xs font-bold border border-gold-200 rounded-full font-cairo shadow-sm">صفحة ${pageNum}</span>`;
+        quranContainer.appendChild(pageBreak);
 
-          const span = document.createElement('span');
-          span.className = 'word-token relative';
+        const lines = pages[pageNum];
+        
+        Object.keys(lines).forEach((lineNum) => {
+          const lineElements = lines[lineNum];
+          const lineDiv = document.createElement('div');
           
-          if (word.char_type_name === 'end') {
-            span.className = 'inline-flex items-center justify-center w-8 h-8 mx-1 text-gold-600 font-quran text-lg md:text-xl align-middle';
-            const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-            span.innerHTML = `﴿${arabicNumber}﴾`;
-          } else {
-            span.textContent = word.text_uthmani;
-            const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
-            span.dataset.key = wordKey;
+          // تحديد إن كان السطر قصير (أقل من 7 عناصر) لضمه في المنتصف بدل المباعدة الكبيرة
+          const isShortLine = lineElements.length < 7;
+          
+          // تنسيق السطر (flex)
+          lineDiv.className = `flex flex-wrap items-center w-full min-h-[3.5rem] leading-none mb-1 ${isShortLine ? 'justify-center gap-3 md:gap-5' : 'justify-between'}`;
+
+          lineElements.forEach(({ word, verse }) => {
+            const span = document.createElement('span');
+            span.className = 'word-token relative';
             
-            const rules = tajweedData[wordKey];
-            if (rules) {
-              span.dataset.categories = rules.map(r => r.type).join(' ');
+            if (word.char_type_name === 'end') {
+              span.className = 'inline-flex items-center justify-center w-8 h-8 mx-1 text-gold-500 font-quran text-lg md:text-xl align-middle';
+              const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+              span.innerHTML = `﴿${arabicNumber}﴾`;
             } else {
-              span.dataset.categories = '';
+              span.textContent = word.text_uthmani;
+              const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
+              span.dataset.key = wordKey;
+              
+              const rules = tajweedData[wordKey];
+              if (rules) {
+                span.dataset.categories = rules.map(r => r.type).join(' ');
+              } else {
+                span.dataset.categories = '';
+              }
+              span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
             }
-            span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
-          }
-          lineDiv.appendChild(span);
+            lineDiv.appendChild(span);
+          });
+          
+          quranContainer.appendChild(lineDiv);
         });
       });
     }
@@ -231,9 +290,7 @@
     async function loadTajweedData(surahId) {
       if (surahId === 1) {
         tajweedData = {
-          "1:1:1": [
-            { type: "tarqeeq", text: "ترقيق الباء والسين والميم." }
-          ],
+          "1:1:1": [{ type: "tarqeeq", text: "ترقيق الباء والسين والميم." }],
           "1:1:3": [
             { type: "lam_shamsiya", text: "إدغام لام التعريف في الراء." },
             { type: "tafkheem", text: "تفخيم الراء المفتوحة." }
