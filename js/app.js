@@ -3,15 +3,18 @@ let currentSurah = 1;
 let currentFilter = 'all';
 let tajweedData = {}; 
 
+// إضافة خاصية "color" للألوان القياسية في المصحف
 const RULE_INFO = {
-  hamas: { title: "الهمس", desc: "جريان النَّفَس عند النطق بالحرف لضعف الاعتماد على مخرجه." },
-  tafkheem: { title: "التفخيم", desc: "تسمين الحرف وتغليظه حتى يمتلئ الفم بصداه." },
-  tarqeeq: { title: "الترقيق", desc: "تنحيف الحرف ونطقه نحيلاً فلا يمتلئ الفم بصداه." },
-  madd_tabiee: { title: "المد الطبيعي", desc: "المد الذي لا تقوم ذات حرف المد إلا به ولا يتوقف على سبب." },
-  lam_shamsiya: { title: "اللام الشمسية", desc: "لام (أل) التعريف المدغمة في الحرف الذي يليها فلا تُنطق." },
-  lam_qamariya: { title: "اللام القمرية", desc: "لام (أل) التعريف المظهرة الساكنة." },
-  idhar: { title: "الإظهار", desc: "إخراج الحرف من مخرجه بغير غنة زائدة." },
-  ikhfa: { title: "الإخفاء", desc: "النطق بالحرف بصفة بين الإظهار والإدغام مع بقاء الغنة." }
+  hamas: { title: "الهمس", desc: "جريان النَّفَس عند النطق بالحرف لضعف الاعتماد على مخرجه.", color: "#8b5cf6" }, // بنفسجي
+  tafkheem: { title: "التفخيم", desc: "تسمين الحرف وتغليظه حتى يمتلئ الفم بصداه.", color: "#3b82f6" }, // أزرق
+  tarqeeq: { title: "الترقيق", desc: "تنحيف الحرف ونطقه نحيلاً فلا يمتلئ الفم بصداه.", color: "#14b8a6" }, // تركواز
+  madd_tabiee: { title: "المد الطبيعي", desc: "المد الذي لا تقوم ذات حرف المد إلا به ولا يتوقف على سبب.", color: "#ef4444" }, // أحمر
+  madd_ared: { title: "المد العارض للسكون", desc: "أن يأتي بعد حرف المد سكون عارض لأجل الوقف يجوز مده ٢، ٤، ٦ حركات.", color: "#ef4444" }, // أحمر
+  madd_lazim: { title: "المد اللازم", desc: "أن يأتي بعد حرف المد حرف مشدد ويمد 6 حركات لزوماً.", color: "#9f1239" }, // أحمر غامق
+  lam_shamsiya: { title: "اللام الشمسية", desc: "لام (أل) التعريف المدغمة في الحرف الذي يليها فلا تُنطق.", color: "#9ca3af" }, // رمادي
+  lam_qamariya: { title: "اللام القمرية", desc: "لام (أل) التعريف المظهرة الساكنة.", color: "#f59e0b" }, // برتقالي/عنبري
+  idhar_halqi: { title: "الإظهار الحلقي", desc: "إخراج النون الساكنة من مخرجها بغير غنة زائدة.", color: "#10b981" }, // أخضر
+  idhar_shafawi: { title: "الإظهار الشفوي", desc: "إخراج الميم الساكنة من مخرجها واضحة.", color: "#10b981" } // أخضر
 };
 
 const surahListContainer = document.getElementById('surahList');
@@ -23,6 +26,11 @@ const defaultDetailsState = document.getElementById('defaultDetailsState');
 const activeWordDetails = document.getElementById('activeWordDetails');
 const selectedWordEl = document.getElementById('selectedWord');
 const rulesListEl = document.getElementById('rulesList');
+
+// عناصر بطاقة شرح الحكم
+const ruleBriefCard = document.getElementById('ruleBriefCard');
+const ruleBriefTitle = document.getElementById('ruleBriefTitle');
+const ruleBriefDesc = document.getElementById('ruleBriefDesc');
 
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
@@ -92,12 +100,11 @@ async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
   closeWordDetails(); 
 
   try {
-    await loadTajweedData(surahId); // استدعاء البيانات من ملف الـ JSON الخارجي
+    await loadTajweedData(surahId); 
     const response = await fetch(`${API_BASE_URL}/verses/by_chapter/${surahId}?language=ar&words=true&word_fields=text_uthmani,line_number,page_number&per_page=300`);
     const data = await response.json();
     renderMushaf(data.verses);
     
-    // إعادة تطبيق الفلتر الحالي إن وُجد
     if(currentFilter !== 'all') {
       const activeFilterBtn = document.querySelector(`.filter-chip[data-cat="${currentFilter}"]`);
       if(activeFilterBtn) applyFilter(currentFilter, activeFilterBtn);
@@ -166,28 +173,23 @@ function renderMushaf(verses) {
   });
 }
 
-// التعديل الرئيسي هنا: جلب البيانات من المجلد
 async function loadTajweedData(surahId) {
   try {
-    // استخدم المسار النسبي لكي يعمل بشكل صحيح على GitHub Pages
     const response = await fetch(`./data/tajweed_db/surah_${surahId}.json`);
-    
-    // إذا لم يكن الملف موجوداً (السورة لم تُضف لها أحكام بعد)، لا توقف البرنامج
     if (!response.ok) {
       tajweedData = {};
       return;
     }
     tajweedData = await response.json();
   } catch (error) {
-    // إذا فشل الجلب لأي سبب (مثلاً الملف غير موجود)، اجعل البيانات فارغة وتجاهل الخطأ
     tajweedData = {};
   }
 }
 
 function openWordDetails(wordText, wordKey, rules) {
-  document.querySelectorAll('.word-token.speaking').forEach(el => el.classList.remove('speaking'));
+  document.querySelectorAll('.word-token.speaking').forEach(el => el.classList.remove('speaking', 'bg-gold-50'));
   const wordEl = document.querySelector(`span[data-key="${wordKey}"]`);
-  if (wordEl) wordEl.classList.add('speaking');
+  if (wordEl) wordEl.classList.add('bg-gold-50');
 
   defaultDetailsState.classList.add('hidden');
   activeWordDetails.classList.remove('hidden');
@@ -198,10 +200,10 @@ function openWordDetails(wordText, wordKey, rules) {
   
   if (rules && rules.length > 0) {
     rules.forEach(rule => {
-      const ruleInfo = RULE_INFO[rule.type] || { title: rule.type, desc: "" };
+      const ruleInfo = RULE_INFO[rule.type] || { title: rule.type, desc: "", color: "#D4AF37" };
       rulesListEl.innerHTML += `
-        <div class="bg-gold-50/40 border border-gold-100 rounded-lg p-3 border-r-4 border-r-gold-500 text-right">
-          <div class="font-bold text-gold-700 text-sm mb-1">${ruleInfo.title}</div>
+        <div class="bg-surface border rounded-lg p-3 text-right" style="border-right: 4px solid ${ruleInfo.color}; border-color: ${ruleInfo.color}40;">
+          <div class="font-bold text-sm mb-1" style="color: ${ruleInfo.color}">${ruleInfo.title}</div>
           <div class="text-ink-main text-sm leading-relaxed">${rule.text || ruleInfo.desc}</div>
         </div>
       `;
@@ -212,7 +214,7 @@ function openWordDetails(wordText, wordKey, rules) {
 }
 
 function closeWordDetails() {
-  document.querySelectorAll('.word-token.speaking').forEach(el => el.classList.remove('speaking'));
+  document.querySelectorAll('.word-token.bg-gold-50').forEach(el => el.classList.remove('bg-gold-50'));
   defaultDetailsState.classList.remove('hidden');
   activeWordDetails.classList.add('hidden');
   activeWordDetails.classList.remove('flex');
@@ -233,6 +235,7 @@ function renderFilters() {
 
 function applyFilter(category, btnElement) {
   currentFilter = category;
+  
   document.querySelectorAll('.filter-chip').forEach(b => {
     b.classList.remove('bg-gold-600', 'text-white', 'shadow-md');
     b.classList.add('bg-surface', 'border-gold-200', 'text-ink-muted');
@@ -241,25 +244,38 @@ function applyFilter(category, btnElement) {
   btnElement.classList.add('bg-gold-600', 'text-white', 'shadow-md');
 
   const allWords = document.querySelectorAll('.word-token');
+  
+  // إدارة بطاقة شرح الحكم
   if (category === 'all') {
+    ruleBriefCard.classList.add('hidden');
     allWords.forEach(w => {
-      w.classList.remove('highlight-filter', 'opacity-30', 'grayscale');
+      w.classList.remove('opacity-30', 'grayscale');
       w.style.borderBottom = 'none';
       w.style.backgroundColor = 'transparent';
     });
     return;
   }
 
+  // إظهار بطاقة الشرح باللون المخصص
+  const ruleData = RULE_INFO[category];
+  ruleBriefTitle.textContent = ruleData.title;
+  ruleBriefTitle.style.color = ruleData.color;
+  ruleBriefDesc.textContent = ruleData.desc;
+  ruleBriefCard.style.borderColor = ruleData.color + '60';
+  ruleBriefCard.style.borderRightWidth = '4px';
+  ruleBriefCard.style.borderRightColor = ruleData.color;
+  ruleBriefCard.classList.remove('hidden');
+
+  // تلوين الكلمات بناءً على الحكم
   allWords.forEach(w => {
     if (!w.dataset.categories && w.innerHTML.includes('﴿')) return;
     const cats = (w.dataset.categories || '').split(' ');
+    
     if (cats.includes(category)) {
       w.classList.remove('opacity-30', 'grayscale');
-      w.classList.add('highlight-filter');
-      w.style.backgroundColor = '#F9F1DC';
-      w.style.borderBottom = '2px solid #D4AF37';
+      w.style.backgroundColor = ruleData.color + '15'; // خلفية بلون الحكم شفافة (Hex + Opacity)
+      w.style.borderBottom = `2px solid ${ruleData.color}`;
     } else {
-      w.classList.remove('highlight-filter');
       w.style.backgroundColor = 'transparent';
       w.style.borderBottom = 'none';
       w.classList.add('opacity-30', 'grayscale');
@@ -267,5 +283,4 @@ function applyFilter(category, btnElement) {
   });
 }
 
-// بدء التشغيل
 init();
