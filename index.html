@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المصحف المعلم التفاعلي لأحكام التجويد</title>
+  
+  <!-- الخطوط العربية (أميري للقرآن، وكايرو للنصوص العادية) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- الأيقونات -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- إعدادات Tailwind CSS السريعة -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: '#ffffff',
+            gold: { 100: '#F9F1DC', 300: '#E7C873', 500: '#D4AF37', 700: '#8C6C11' },
+            ink: { main: '#2C241B', muted: '#6B5E4F' }
+          },
+          fontFamily: {
+            quran: ['"Amiri Quran"', 'serif'],
+            cairo: ['"Cairo"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FDFBF7;
+      /* نقشة إسلامية خفيفة في الخلفية */
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* تصميم إطار المصحف العثماني */
+    .mushaf-frame {
+      border: 8px solid #F9F1DC;
+      outline: 2px solid #D4AF37;
+      outline-offset: -6px;
+      background-color: #ffffff;
+      box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1), 0 10px 30px rgba(0,0,0,0.05);
+    }
+    
+    /* تنسيق الكلمات وحالتها (هذه الكلاسات سيتم إضافتها برمجيا لاحقاً) */
+    .word-token {
+      display: inline-block;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0 2px;
+      border-radius: 4px;
+    }
+    .word-token:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+  </style>
+</head>
+<body class="font-cairo text-ink-main pb-10">
+
+  <div class="max-w-7xl mx-auto px-4 pt-8">
+    
+    <!-- الترويسة العلوية -->
+    <header class="text-center mb-8">
+      <h1 class="font-quran text-3xl md:text-4xl text-gold-700" id="surahTitle">جاري تحميل السورة...</h1>
+      <p class="text-ink-muted text-sm mt-2">المصحف المعلم التفاعلي لأحكام التجويد</p>
+    </header>
+
+    <!-- شريط تصفية الأحكام (الفلاتر) - سيتم توليد الأزرار هنا بالـ JS -->
+    <section class="mb-6">
+      <div class="flex flex-wrap gap-2 pb-2 justify-center" id="filtersContainer">
+        <!-- الأزرار ستظهر هنا -->
+      </div>
+    </section>
+
+    <!-- الهيكل الرئيسي: المصحف (يمين) والتفاصيل (يسار) -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- إطار المصحف (الجهة اليمنى وتأخذ المساحة الأكبر) -->
+      <div class="lg:col-span-8 mushaf-frame rounded-xl p-6 md:p-10 relative">
+        <div class="absolute top-2 right-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
+        <div class="absolute top-2 left-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
+        
+        <!-- هنا سيتم حقن الآيات بحيث تبدو كأسطر المصحف العثماني -->
+        <div id="quranContainer" class="text-justify font-quran text-2xl md:text-3xl text-ink-main leading-[2.5] select-none" style="text-align-last: center;">
+          <!-- جاري التحميل... -->
+        </div>
+      </div>
+
+      <!-- اللوحة الجانبية لعرض أحكام التجويد (الجهة اليسرى) -->
+      <aside class="lg:col-span-4 sticky top-6">
+        <div id="detailsSidebar" class="bg-surface rounded-xl shadow-lg border border-gold-200 p-6 min-h-[300px] flex flex-col justify-center text-center">
+          
+          <div class="w-16 h-16 bg-gold-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gold-400">
+            <i class="ph-duotone ph-hand-pointing text-3xl"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2 text-ink-main">تفاصيل الأحكام التجويدية</h3>
+          <p class="text-sm text-ink-muted">اضغط على أي كلمة من السورة في الإطار المقابل لعرض أحكامها التجويدية هنا.</p>
+          
+          <!-- الأجزاء المخفية التي ستظهر عند الضغط على الكلمة -->
+          <div id="activeWordDetails" class="hidden text-right mt-4">
+            <h2 id="selectedWord" class="font-quran text-4xl text-gold-700 text-center mb-4"></h2>
+            <div id="rulesList" class="space-y-3 max-h-[40vh] overflow-y-auto"></div>
+          </div>
+
+        </div>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- ربط ملف الجافاسكريبت الخارجي (الذي سنكتبه في الخطوة القادمة) -->
+  <script src="./js/app.js"></script>
+</body>
+</html>
