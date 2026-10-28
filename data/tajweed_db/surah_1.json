@@ -1,1 +1,125 @@
-{"1:1:2":[{"type":"silent","chars":[0]}],"1:1:3":[{"type":"silent","chars":[0]},{"type":"lam_shamsiya","chars":[1]},{"type":"madd_tabiee","chars":[9]}],"1:1:4":[{"type":"lam_shamsiya","chars":[0]},{"type":"madd_ared","chars":[6]}],"1:2:4":[{"type":"silent","chars":[0]},{"type":"madd_tabiee","chars":[5]},{"type":"madd_ared","chars":[10]}],"1:3:1":[{"type":"lam_shamsiya","chars":[1]},{"type":"madd_tabiee","chars":[9]}],"1:3:2":[{"type":"lam_shamsiya","chars":[0]},{"type":"madd_ared","chars":[6]}],"1:4:1":[{"type":"madd_tabiee","chars":[2]}],"1:4:3":[{"type":"lam_shamsiya","chars":[0]},{"type":"madd_ared","chars":[4]}],"1:5:4":[{"type":"madd_ared","chars":[8]}],"1:6:2":[{"type":"silent","chars":[0]},{"type":"lam_shamsiya","chars":[1]},{"type":"madd_tabiee","chars":[7]}],"1:6:3":[{"type":"silent","chars":[0]},{"type":"madd_ared","chars":[11]}],"1:7:1":[{"type":"madd_tabiee","chars":[4]}],"1:7:2":[{"type":"silent","chars":[0]}],"1:7:6":[{"type":"silent","chars":[0]}],"1:7:9":[{"type":"silent","chars":[0]},{"type":"lam_shamsiya","chars":[1]},{"type":"madd_lazim","chars":[5,6]},{"type":"madd_ared","chars":[10]}]}
+{
+  "1:1:1": [
+    { "type": "hamas", "chars": [1] },
+    { "type": "tarqeeq", "chars": [0, 1, 2] }
+  ],
+  "1:1:2": [
+    { "type": "silent", "chars": [0] },
+    { "type": "tarqeeq", "chars": [1, 2] }
+  ],
+  "1:1:3": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_shamsiya", "chars": [1] },
+    { "type": "tafkheem", "chars": [2] },
+    { "type": "hamas", "chars": [3] },
+    { "type": "madd_tabiee", "chars": [9] }
+  ],
+  "1:1:4": [
+    { "type": "lam_shamsiya", "chars": [0] },
+    { "type": "tafkheem", "chars": [1] },
+    { "type": "madd_ared", "chars": [6] }
+  ],
+  "1:2:1": [
+    { "type": "lam_qamariya", "chars": [1] }
+  ],
+  "1:2:2": [
+    { "type": "tarqeeq", "chars": [1, 2] }
+  ],
+  "1:2:3": [
+    { "type": "tafkheem", "chars": [0] }
+  ],
+  "1:2:4": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_qamariya", "chars": [1] },
+    { "type": "madd_tabiee", "chars": [5] },
+    { "type": "madd_ared", "chars": [10] }
+  ],
+  "1:3:1": [
+    { "type": "lam_shamsiya", "chars": [1] },
+    { "type": "tafkheem", "chars": [2] },
+    { "type": "hamas", "chars": [3] },
+    { "type": "madd_tabiee", "chars": [9] }
+  ],
+  "1:3:2": [
+    { "type": "lam_shamsiya", "chars": [0] },
+    { "type": "tafkheem", "chars": [1] },
+    { "type": "madd_ared", "chars": [6] }
+  ],
+  "1:4:1": [
+    { "type": "madd_tabiee", "chars": [2] }
+  ],
+  "1:4:2": [
+    { "type": "tarqeeq", "chars": [1] }
+  ],
+  "1:4:3": [
+    { "type": "lam_shamsiya", "chars": [0] },
+    { "type": "madd_ared", "chars": [4] }
+  ],
+  "1:5:1": [
+    { "type": "madd_tabiee", "chars": [3] }
+  ],
+  "1:5:2": [
+    { "type": "tarqeeq", "chars": [1] }
+  ],
+  "1:5:3": [
+    { "type": "madd_tabiee", "chars": [4] }
+  ],
+  "1:5:4": [
+    { "type": "hamas", "chars": [1] },
+    { "type": "madd_ared", "chars": [8] }
+  ],
+  "1:6:1": [
+    { "type": "hamas", "chars": [1] },
+    { "type": "madd_tabiee", "chars": [4] }
+  ],
+  "1:6:2": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_shamsiya", "chars": [1] },
+    { "type": "tafkheem", "chars": [2, 4] },
+    { "type": "madd_tabiee", "chars": [7] }
+  ],
+  "1:6:3": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_qamariya", "chars": [1] },
+    { "type": "hamas", "chars": [2, 4] },
+    { "type": "madd_ared", "chars": [11] }
+  ],
+  "1:7:1": [
+    { "type": "tafkheem", "chars": [0, 1, 2] },
+    { "type": "madd_tabiee", "chars": [4] }
+  ],
+  "1:7:2": [
+    { "type": "silent", "chars": [0] },
+    { "type": "madd_tabiee", "chars": [3] }
+  ],
+  "1:7:3": [
+    { "type": "idhar_halqi", "chars": [1] },
+    { "type": "idhar_shafawi", "chars": [4] }
+  ],
+  "1:7:4": [
+    { "type": "idhar_shafawi", "chars": [5] }
+  ],
+  "1:7:5": [
+    { "type": "tafkheem", "chars": [0] },
+    { "type": "tarqeeq", "chars": [2] }
+  ],
+  "1:7:6": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_qamariya", "chars": [1] },
+    { "type": "tafkheem", "chars": [2, 3] },
+    { "type": "madd_tabiee", "chars": [4] }
+  ],
+  "1:7:7": [
+    { "type": "idhar_shafawi", "chars": [5] }
+  ],
+  "1:7:8": [
+    { "type": "madd_tabiee", "chars": [2] }
+  ],
+  "1:7:9": [
+    { "type": "silent", "chars": [0] },
+    { "type": "lam_shamsiya", "chars": [1] },
+    { "type": "tafkheem", "chars": [2] },
+    { "type": "madd_lazim", "chars": [5, 6] },
+    { "type": "madd_ared", "chars": [10] }
+  ]
+}
