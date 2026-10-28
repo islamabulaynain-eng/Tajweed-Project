@@ -266,18 +266,16 @@ function applyFilter(category, btnElement) {
 
   const allWords = document.querySelectorAll('.word-token');
   
-  // إدارة بطاقة شرح الحكم
   if (category === 'all') {
     ruleBriefCard.classList.add('hidden');
     allWords.forEach(w => {
       w.classList.remove('opacity-30', 'grayscale');
-      w.style.borderBottom = 'none';
-      w.style.backgroundColor = 'transparent';
+      // إعادة النص لحالته الأصلية بدون الـ spans الداخلية
+      if(w.dataset.originalText) w.innerHTML = w.dataset.originalText;
     });
     return;
   }
 
-  // إظهار بطاقة الشرح باللون المخصص
   const ruleData = RULE_INFO[category];
   ruleBriefTitle.textContent = ruleData.title;
   ruleBriefTitle.style.color = ruleData.color;
@@ -287,18 +285,35 @@ function applyFilter(category, btnElement) {
   ruleBriefCard.style.borderRightColor = ruleData.color;
   ruleBriefCard.classList.remove('hidden');
 
-  // تلوين الكلمات بناءً على الحكم
   allWords.forEach(w => {
     if (!w.dataset.categories && w.innerHTML.includes('﴿')) return;
-    const cats = (w.dataset.categories || '').split(' ');
     
-    if (cats.includes(category)) {
+    const wordKey = w.dataset.key;
+    const rules = tajweedData[wordKey] || [];
+    const targetRule = rules.find(r => r.type === category);
+
+    // حفظ النص الأصلي إذا لم يكن محفوظاً
+    if (!w.dataset.originalText) {
+      w.dataset.originalText = w.textContent;
+    }
+
+    if (targetRule && targetRule.chars) {
       w.classList.remove('opacity-30', 'grayscale');
-      w.style.backgroundColor = ruleData.color + '15'; // خلفية بلون الحكم شفافة (Hex + Opacity)
-      w.style.borderBottom = `2px solid ${ruleData.color}`;
+      
+      // تقطيع الكلمة وتلوين الحروف المحددة فقط
+      const chars = Array.from(w.dataset.originalText);
+      let newHtml = '';
+      chars.forEach((char, index) => {
+        if (targetRule.chars.includes(index)) {
+          newHtml += `<span style="color: ${ruleData.color}; font-weight: bold;">${char}</span>`;
+        } else {
+          newHtml += char;
+        }
+      });
+      w.innerHTML = newHtml;
+      
     } else {
-      w.style.backgroundColor = 'transparent';
-      w.style.borderBottom = 'none';
+      w.innerHTML = w.dataset.originalText;
       w.classList.add('opacity-30', 'grayscale');
     }
   });
