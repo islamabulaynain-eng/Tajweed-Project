@@ -57,7 +57,7 @@
 </head>
 <body class="font-cairo text-ink-main pb-10">
 
-  <!-- زر القائمة الجانبية للموبايل (يظهر فقط في الشاشات الصغيرة) -->
+  <!-- زر القائمة الجانبية للموبايل -->
   <button id="mobileMenuBtn" class="lg:hidden fixed top-4 right-4 z-[60] w-12 h-12 bg-surface border border-gold-300 text-gold-700 rounded-full shadow-lg flex items-center justify-center hover:bg-gold-50 transition-colors">
     <i class="ph-bold ph-list text-2xl"></i>
   </button>
@@ -74,7 +74,6 @@
     <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative">
       
       <!-- 1. القائمة الجانبية اليمنى (فهرس السور) -->
-      <!-- تم تعديل الكلاسات لتصبح Drawer في الموبايل و Fixed Sidebar في الكمبيوتر -->
       <aside id="surahIndexSidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 lg:w-auto transform translate-x-full lg:translate-x-0 transition-transform duration-300 lg:col-span-2 bg-surface lg:rounded-xl shadow-2xl lg:shadow-md border-l lg:border border-gold-200 overflow-hidden flex flex-col h-full lg:h-[70vh]">
         <div class="bg-gold-50 p-4 lg:p-3 border-b border-gold-200 text-center font-bold text-gold-700 flex items-center justify-between lg:justify-center gap-2">
           <div class="flex items-center gap-2">
@@ -92,11 +91,15 @@
         <div class="absolute top-2 right-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
         <div class="absolute top-2 left-2 text-gold-300/40"><i class="ph-fill ph-moon-stars text-2xl"></i></div>
         
+        <!-- الترويسة داخل الإطار (اسم السورة والبسملة الثابتة) -->
         <div class="text-center border-b border-gold-200 pb-4 mb-6">
           <h2 id="currentSurahTitle" class="font-quran text-2xl md:text-3xl text-gold-600">...</h2>
+          <!-- عنوان البسملة الذي يظهر لجميع السور عدا الفاتحة والتوبة -->
+          <div id="basmalahHeader" class="hidden font-quran text-2xl md:text-[28px] text-ink-main mt-4">
+            بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
+          </div>
         </div>
         
-        <!-- تم إضافة max-w-[700px] للتحكم في عرض النص وضبط الفواصل -->
         <div id="quranContainer" class="max-w-[700px] mx-auto text-justify font-quran text-[26px] md:text-[32px] text-ink-main leading-[2.5] select-none" style="text-align-last: center;"></div>
       </div>
 
@@ -137,23 +140,21 @@
       ikhfa: { title: "الإخفاء", desc: "النطق بالحرف بصفة بين الإظهار والإدغام مع بقاء الغنة." }
     };
 
-    // عناصر الـ DOM
     const surahListContainer = document.getElementById('surahList');
     const quranContainer = document.getElementById('quranContainer');
     const currentSurahTitle = document.getElementById('currentSurahTitle');
+    const basmalahHeader = document.getElementById('basmalahHeader');
     const filtersContainer = document.getElementById('filtersContainer');
     const defaultDetailsState = document.getElementById('defaultDetailsState');
     const activeWordDetails = document.getElementById('activeWordDetails');
     const selectedWordEl = document.getElementById('selectedWord');
     const rulesListEl = document.getElementById('rulesList');
 
-    // عناصر قائمة الموبايل
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
     const surahIndexSidebar = document.getElementById('surahIndexSidebar');
     const mobileOverlay = document.getElementById('mobileOverlay');
 
-    // وظيفة فتح/إغلاق القائمة في الموبايل
     function toggleMobileMenu() {
       surahIndexSidebar.classList.toggle('translate-x-full');
       mobileOverlay.classList.toggle('hidden');
@@ -184,7 +185,6 @@
               currentSurah = chapter.id;
               loadSurah(currentSurah, chapter.name_arabic);
               updateSurahSelection(chapter.id);
-              // إغلاق القائمة في الموبايل بعد اختيار السورة
               if(window.innerWidth < 1024) toggleMobileMenu();
             }
           };
@@ -208,6 +208,14 @@
     async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
       quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
       currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
+      
+      // إظهار أو إخفاء البسملة الثابتة حسب رقم السورة
+      if (surahId !== 1 && surahId !== 9) {
+        basmalahHeader.classList.remove('hidden');
+      } else {
+        basmalahHeader.classList.add('hidden');
+      }
+
       closeWordDetails(); 
 
       try {
@@ -222,8 +230,6 @@
 
     function renderMushaf(verses) {
       quranContainer.innerHTML = '';
-      
-      // تجميع الكلمات حسب الصفحة ثم حسب السطر
       const pages = {};
       
       verses.forEach(verse => {
@@ -237,10 +243,7 @@
         });
       });
 
-      // رسم المصحف بناءً على الصفحات والأسطر المجمعة
-      Object.keys(pages).forEach((pageNum, index) => {
-        
-        // إضافة فاصل الصفحة (Page Break)
+      Object.keys(pages).forEach((pageNum) => {
         const pageBreak = document.createElement('div');
         pageBreak.className = 'w-full border-b border-dashed border-gold-300 my-8 relative flex justify-center';
         pageBreak.innerHTML = `<span class="absolute -top-3 bg-surface px-4 text-gold-600 text-xs font-bold border border-gold-200 rounded-full font-cairo shadow-sm">صفحة ${pageNum}</span>`;
@@ -252,10 +255,7 @@
           const lineElements = lines[lineNum];
           const lineDiv = document.createElement('div');
           
-          // تحديد إن كان السطر قصير (أقل من 7 عناصر) لضمه في المنتصف بدل المباعدة الكبيرة
           const isShortLine = lineElements.length < 7;
-          
-          // تنسيق السطر (flex)
           lineDiv.className = `flex flex-wrap items-center w-full min-h-[3.5rem] leading-none mb-1 ${isShortLine ? 'justify-center gap-3 md:gap-5' : 'justify-between'}`;
 
           lineElements.forEach(({ word, verse }) => {
