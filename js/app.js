@@ -1,10 +1,8 @@
-// --- إعدادات التطبيق الأساسية ---
 const API_BASE_URL = 'https://api.quran.com/api/v4';
 let currentSurah = 1;
 let currentFilter = 'all';
-let tajweedData = {}; // سيتم تخزين أحكام السورة الحالية هنا
+let tajweedData = {}; 
 
-// تعريف قواعد التجويد الأساسية وألوانها لتوليد الفلاتر
 const RULE_INFO = {
   hamas: { title: "الهمس", desc: "جريان النَّفَس عند النطق بالحرف لضعف الاعتماد على مخرجه." },
   tafkheem: { title: "التفخيم", desc: "تسمين الحرف وتغليظه حتى يمتلئ الفم بصداه." },
@@ -16,48 +14,57 @@ const RULE_INFO = {
   ikhfa: { title: "الإخفاء", desc: "النطق بالحرف بصفة بين الإظهار والإدغام مع بقاء الغنة." }
 };
 
-// --- العناصر في واجهة المستخدم (DOM Elements) ---
 const surahListContainer = document.getElementById('surahList');
 const quranContainer = document.getElementById('quranContainer');
 const currentSurahTitle = document.getElementById('currentSurahTitle');
+const basmalahHeader = document.getElementById('basmalahHeader');
 const filtersContainer = document.getElementById('filtersContainer');
 const defaultDetailsState = document.getElementById('defaultDetailsState');
 const activeWordDetails = document.getElementById('activeWordDetails');
 const selectedWordEl = document.getElementById('selectedWord');
 const rulesListEl = document.getElementById('rulesList');
 
-// --- التهيئة عند تحميل الصفحة (Initialization) ---
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+const surahIndexSidebar = document.getElementById('surahIndexSidebar');
+const mobileOverlay = document.getElementById('mobileOverlay');
+
+function toggleMobileMenu() {
+  surahIndexSidebar.classList.toggle('translate-x-full');
+  mobileOverlay.classList.toggle('hidden');
+}
+
+mobileMenuBtn.onclick = toggleMobileMenu;
+closeMobileMenuBtn.onclick = toggleMobileMenu;
+mobileOverlay.onclick = toggleMobileMenu;
+
 async function init() {
   renderFilters();
   await fetchSurahList();
   await loadSurah(currentSurah);
 }
 
-// --- جلب وعرض فهرس السور ---
 async function fetchSurahList() {
   try {
     const response = await fetch(`${API_BASE_URL}/chapters?language=ar`);
     const data = await response.json();
-    
-    surahListContainer.innerHTML = ''; // تفريغ القائمة
+    surahListContainer.innerHTML = ''; 
     
     data.chapters.forEach(chapter => {
       const btn = document.createElement('button');
       btn.className = `w-full text-right p-2 rounded mb-1 transition-colors text-sm font-semibold ${chapter.id === currentSurah ? 'bg-gold-100 text-gold-700 border border-gold-200' : 'text-ink-muted hover:bg-gray-50 hover:text-ink-main'}`;
       btn.innerHTML = `<span class="inline-block w-6 text-center text-xs opacity-70">${chapter.id}</span> ${chapter.name_arabic}`;
-      
       btn.onclick = () => {
         if (currentSurah !== chapter.id) {
           currentSurah = chapter.id;
           loadSurah(currentSurah, chapter.name_arabic);
           updateSurahSelection(chapter.id);
+          if(window.innerWidth < 1024) toggleMobileMenu();
         }
       };
-      
       surahListContainer.appendChild(btn);
     });
   } catch (error) {
-    console.error('Error fetching surahs:', error);
     surahListContainer.innerHTML = '<div class="text-red-500 text-center text-sm">حدث خطأ في تحميل الفهرس.</div>';
   }
 }
@@ -72,120 +79,116 @@ function updateSurahSelection(id) {
   });
 }
 
-// --- جلب آيات السورة وعرضها (محرك الواجهة) ---
 async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
-  quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10">جاري تحميل السورة...</div>';
+  quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
   currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
-  closeWordDetails(); // إغلاق التفاصيل عند تغيير السورة
+  
+  if (surahId !== 1 && surahId !== 9) {
+    basmalahHeader.classList.remove('hidden');
+  } else {
+    basmalahHeader.classList.add('hidden');
+  }
+
+  closeWordDetails(); 
 
   try {
-    // محاكاة جلب ملف الـ JSON الخاص بالتجويد (سيتم تغييره لاحقاً ليكون fetch حقيقي)
-    await loadTajweedData(surahId);
-
-    // جلب كلمات السورة من Quran.com (يتضمن رقم السطر والصفحة لكل كلمة)
+    await loadTajweedData(surahId); // استدعاء البيانات من ملف الـ JSON الخارجي
     const response = await fetch(`${API_BASE_URL}/verses/by_chapter/${surahId}?language=ar&words=true&word_fields=text_uthmani,line_number,page_number&per_page=300`);
     const data = await response.json();
-    
     renderMushaf(data.verses);
     
+    // إعادة تطبيق الفلتر الحالي إن وُجد
+    if(currentFilter !== 'all') {
+      const activeFilterBtn = document.querySelector(`.filter-chip[data-cat="${currentFilter}"]`);
+      if(activeFilterBtn) applyFilter(currentFilter, activeFilterBtn);
+    }
   } catch (error) {
-    console.error('Error loading surah:', error);
-    quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10">حدث خطأ أثناء تحميل الآيات. يرجى المحاولة مرة أخرى.</div>';
+    quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10">حدث خطأ أثناء تحميل الآيات.</div>';
   }
 }
 
-// --- بناء السطور لتطابق المصحف العثماني ---
 function renderMushaf(verses) {
   quranContainer.innerHTML = '';
+  const pages = {};
   
-  let currentLineNumber = -1;
-  let lineDiv = null;
-
   verses.forEach(verse => {
     verse.words.forEach(word => {
-      // تجاهل علامات التوقف (End of verse marks) إذا كانت تأتي ككلمات منفصلة بدون نص عثماني
       if (!word.text_uthmani && word.char_type_name !== 'end') return;
+      const p = word.page_number;
+      const l = word.line_number;
+      if (!pages[p]) pages[p] = {};
+      if (!pages[p][l]) pages[p][l] = [];
+      pages[p][l].push({ word, verse });
+    });
+  });
 
-      // إذا تغير رقم السطر، ننشئ حاوية (div) جديدة لتمثيل السطر
-      if (word.line_number !== currentLineNumber) {
-        currentLineNumber = word.line_number;
-        lineDiv = document.createElement('div');
-        lineDiv.className = 'flex flex-wrap justify-center md:justify-between items-center w-full min-h-[3rem] mb-2 leading-none';
-        
-        // لمحاذاة السطور بشكل مثالي زي المصحف (Justify)
-        if (word.line_number > 1) {
-          lineDiv.style.justifyContent = 'space-between';
-        } else {
-          lineDiv.style.justifyContent = 'center'; // البسملة أو أول سطر غالباً في المنتصف
-        }
-        
-        quranContainer.appendChild(lineDiv);
-      }
+  Object.keys(pages).forEach((pageNum) => {
+    const pageBreak = document.createElement('div');
+    pageBreak.className = 'w-full border-b border-dashed border-gold-300 my-8 relative flex justify-center';
+    pageBreak.innerHTML = `<span class="absolute -top-3 bg-surface px-4 text-gold-600 text-xs font-bold border border-gold-200 rounded-full font-cairo shadow-sm">صفحة ${pageNum}</span>`;
+    quranContainer.appendChild(pageBreak);
 
-      // إنشاء الكلمة
-      const span = document.createElement('span');
-      span.className = 'word-token relative';
+    const lines = pages[pageNum];
+    
+    Object.keys(lines).forEach((lineNum) => {
+      const lineElements = lines[lineNum];
+      const lineDiv = document.createElement('div');
       
-      // إذا كانت علامة نهاية الآية (رقم الآية)
-      if (word.char_type_name === 'end') {
-        span.className = 'inline-flex items-center justify-center w-8 h-8 mx-1 text-gold-600 font-quran text-lg md:text-xl align-middle';
-        // تحويل الرقم إلى أرقام عربية (هندية)
-        const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-        span.innerHTML = `﴿${arabicNumber}﴾`;
-      } else {
-        // كلمة عادية
-        span.textContent = word.text_uthmani;
+      const isShortLine = lineElements.length < 7;
+      lineDiv.className = `flex flex-wrap items-center w-full min-h-[3.5rem] leading-none mb-1 ${isShortLine ? 'justify-center gap-3 md:gap-5' : 'justify-between'}`;
+
+      lineElements.forEach(({ word, verse }) => {
+        const span = document.createElement('span');
+        span.className = 'word-token relative';
         
-        // استخراج معرف الكلمة لربطها بملف التجويد (مثال: 1:1:1)
-        const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
-        span.dataset.key = wordKey;
-        
-        // إضافة الأحكام إن وجدت
-        const rules = tajweedData[wordKey];
-        if (rules) {
-          span.dataset.categories = rules.map(r => r.type).join(' ');
+        if (word.char_type_name === 'end') {
+          span.className = 'inline-flex items-center justify-center w-8 h-8 mx-1 text-gold-500 font-quran text-lg md:text-xl align-middle';
+          const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+          span.innerHTML = `﴿${arabicNumber}﴾`;
         } else {
-          span.dataset.categories = '';
+          span.textContent = word.text_uthmani;
+          const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
+          span.dataset.key = wordKey;
+          
+          const rules = tajweedData[wordKey];
+          if (rules) {
+            span.dataset.categories = rules.map(r => r.type).join(' ');
+          } else {
+            span.dataset.categories = '';
+          }
+          span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
         }
-
-        span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
-      }
-
-      lineDiv.appendChild(span);
+        lineDiv.appendChild(span);
+      });
+      
+      quranContainer.appendChild(lineDiv);
     });
   });
 }
 
-// --- محاكاة جلب بيانات التجويد (مستقبلاً سيتم جلبها من مجلد data) ---
+// التعديل الرئيسي هنا: جلب البيانات من المجلد
 async function loadTajweedData(surahId) {
-  // حالياً بيانات تجريبية لسورة الفاتحة فقط. 
-  // في المستقبل سيكون الكود كالتالي:
-  // const res = await fetch(`../data/tajweed_db/surah_${surahId}.json`);
-  // tajweedData = await res.json();
-  
-  if (surahId === 1) {
-    tajweedData = {
-      "1:1:1": [
-        { type: "tarqeeq", text: "ترقيق الباء والسين والميم." }
-      ],
-      "1:1:3": [
-        { type: "lam_shamsiya", text: "إدغام لام التعريف في الراء." },
-        { type: "tafkheem", text: "تفخيم الراء المفتوحة." }
-      ]
-    };
-  } else {
+  try {
+    // استخدم المسار النسبي لكي يعمل بشكل صحيح على GitHub Pages
+    const response = await fetch(`./data/tajweed_db/surah_${surahId}.json`);
+    
+    // إذا لم يكن الملف موجوداً (السورة لم تُضف لها أحكام بعد)، لا توقف البرنامج
+    if (!response.ok) {
+      tajweedData = {};
+      return;
+    }
+    tajweedData = await response.json();
+  } catch (error) {
+    // إذا فشل الجلب لأي سبب (مثلاً الملف غير موجود)، اجعل البيانات فارغة وتجاهل الخطأ
     tajweedData = {};
   }
 }
 
-// --- التحكم في اللوحة الجانبية وتفاصيل التجويد ---
 function openWordDetails(wordText, wordKey, rules) {
-  // تسليط الضوء على الكلمة المحددة فقط
   document.querySelectorAll('.word-token.speaking').forEach(el => el.classList.remove('speaking'));
   const wordEl = document.querySelector(`span[data-key="${wordKey}"]`);
   if (wordEl) wordEl.classList.add('speaking');
 
-  // تغيير حالة اللوحة الجانبية
   defaultDetailsState.classList.add('hidden');
   activeWordDetails.classList.remove('hidden');
   activeWordDetails.classList.add('flex');
@@ -215,10 +218,8 @@ function closeWordDetails() {
   activeWordDetails.classList.remove('flex');
 }
 
-// --- الفلاتر وتصفية الأحكام ---
 function renderFilters() {
   filtersContainer.innerHTML = `<button data-cat="all" onclick="applyFilter('all', this)" class="filter-chip bg-gold-600 text-white px-4 py-1.5 rounded-full text-xs md:text-sm font-bold flex-shrink-0 transition-all shadow-md">الكل</button>`;
-  
   Object.keys(RULE_INFO).forEach(key => {
     const title = RULE_INFO[key].title;
     const btn = document.createElement('button');
@@ -232,19 +233,14 @@ function renderFilters() {
 
 function applyFilter(category, btnElement) {
   currentFilter = category;
-  
-  // تحديث ألوان الأزرار
   document.querySelectorAll('.filter-chip').forEach(b => {
     b.classList.remove('bg-gold-600', 'text-white', 'shadow-md');
     b.classList.add('bg-surface', 'border-gold-200', 'text-ink-muted');
   });
-  
   btnElement.classList.remove('bg-surface', 'border-gold-200', 'text-ink-muted');
   btnElement.classList.add('bg-gold-600', 'text-white', 'shadow-md');
 
-  // تطبيق التصفية على الكلمات
   const allWords = document.querySelectorAll('.word-token');
-  
   if (category === 'all') {
     allWords.forEach(w => {
       w.classList.remove('highlight-filter', 'opacity-30', 'grayscale');
@@ -255,9 +251,7 @@ function applyFilter(category, btnElement) {
   }
 
   allWords.forEach(w => {
-    // نتخطى علامات الآيات
     if (!w.dataset.categories && w.innerHTML.includes('﴿')) return;
-    
     const cats = (w.dataset.categories || '').split(' ');
     if (cats.includes(category)) {
       w.classList.remove('opacity-30', 'grayscale');
@@ -273,5 +267,5 @@ function applyFilter(category, btnElement) {
   });
 }
 
-// بدء التطبيق
+// بدء التشغيل
 init();
