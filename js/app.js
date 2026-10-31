@@ -3,44 +3,56 @@ let currentSurah = 1;
 let currentFilter = 'all';
 let tajweedData = {}; 
 
-// القاموس الشامل لأحكام التجويد والألوان القياسية
+// 1. تعريف المجموعات (للعرض في الواجهة كعناوين أفقية غير قابلة للضغط)
+const RULE_GROUPS = [
+  { id: "madd_6", title: "🔴 مد 6 حركات لزوماً", color: "#dc2626", rules: ["madd_lazim_kalimi_muthaqqal", "madd_lazim_kalimi_mukhaffaf", "madd_lazim_harfi_muthaqqal", "madd_lazim_harfi_mukhaffaf"] },
+  { id: "madd_4_5", title: "🟡 مد 4 أو 5 حركات (واجب وجائز)", color: "#eab308", rules: ["madd_muttasil", "madd_munfasil", "madd_silah_kubra"] },
+  { id: "madd_2_4_6", title: "🟠 مد 2 أو 4 أو 6 جوازاً", color: "#f97316", rules: ["madd_ared", "madd_leen"] },
+  { id: "madd_2", title: "🟡 مد حركتان", color: "#fde047", rules: ["madd_tabiee", "madd_silah_sughra", "madd_badal", "madd_iwad"] },
+  { id: "ghunnah_ikhfa", title: "🟢 إخفاء ومواقع الغنة (حركتان)", color: "#10b981", rules: ["ikhfa", "ikhfa_shafawi", "ghunnah", "iqlab", "idgham_ghunnah", "idgham_shafawi"] },
+  { id: "idgham_silent", title: "⚫ إدغام وما لا يُلفظ", color: "#4b5563", rules: ["idgham_no_ghunnah", "silent"] },
+  { id: "idhar", title: "⚪ إظهار (ينطق بوضوح)", color: "#9ca3af", rules: ["idhar_halqi", "idhar_shafawi"] },
+  { id: "tafkheem", title: "🔵 تفخيم", color: "#3b82f6", rules: ["tafkheem_general", "tafkheem_lam", "tafkheem_ra"] },
+  { id: "tarqeeq", title: "🟣 ترقيق", color: "#a855f7", rules: ["tarqeeq_general", "tarqeeq_lam", "tarqeeq_ra"] },
+  { id: "qalqalah", title: "🩵 قلقلة", color: "#06b6d4", rules: ["qalqalah_sughra", "qalqalah_wusta", "qalqalah_kubra"] },
+  { id: "hamas", title: "🤍 همس", color: "#64748b", rules: ["hamas"] }
+];
+
+// 2. القاموس التفصيلي للأحكام (يُستخدم للتلوين والشرح عند الضغط على الزر الفرعي)
 const RULE_INFO = {
-  // 1. أحكام النون الساكنة والتنوين والميم
-  idhar_halqi: { title: "الإظهار الحلقي", desc: "إخراج النون الساكنة من مخرجها بغير غنة زائدة.", color: "#10b981" }, // أخضر
-  idhar_shafawi: { title: "الإظهار الشفوي", desc: "إخراج الميم الساكنة من مخرجها واضحة بغير غنة.", color: "#10b981" }, // أخضر
-  ikhfa: { title: "الإخفاء", desc: "النطق بالحرف بصفة بين الإظهار والإدغام مع بقاء الغنة.", color: "#10b981" }, // أخضر
-  ikhfa_shafawi: { title: "الإخفاء الشفوي", desc: "إخفاء الميم الساكنة عند حرف الباء مع الغنة.", color: "#10b981" }, // أخضر
-  iqlab: { title: "الإقلاب", desc: "قلب النون الساكنة أو التنوين ميماً مخفاة بغنة عند الباء.", color: "#10b981" }, // أخضر
-  idgham_ghunnah: { title: "إدغام بغنة", desc: "إدغام النون أو التنوين في أحرف (ينمو) مع مصاحبة الغنة.", color: "#10b981" }, // أخضر
-  idgham_no_ghunnah: { title: "إدغام بغير غنة", desc: "إدغام النون أو التنوين في (ل، ر) إدغاماً كاملاً بدون غنة.", color: "#9ca3af" }, // رمادي
-  ghunnah: { title: "غنة ميّم ونون مشددتين", desc: "إخراج صوت الغنة من الخيشوم بمقدار حركتين.", color: "#10b981" }, // أخضر
-
-  // 2. أحكام المدود
-  madd_tabiee: { title: "المد الطبيعي", desc: "المد الأصلي الذي لا يتوقف على سبب، يُمَد حركتين.", color: "#ef4444" }, // أحمر
-  madd_badal: { title: "مد البدل", desc: "كل همز ممدود يُمَد حركتين.", color: "#ef4444" }, // أحمر
-  madd_iwad: { title: "مد العوض", desc: "التعويض عن تنوين الفتح بألف مد عند الوقف حركتين.", color: "#ef4444" }, // أحمر
-  madd_silah_sughra: { title: "مد صلة صغرى", desc: "مد هاء الضمير حركتين إذا لم يأتِ بعدها همز.", color: "#ef4444" }, // أحمر
-  madd_muttasil: { title: "المد المتصل", desc: "أن يأتي حرف المد وبعده همزة في نفس الكلمة، يُمَد 4-5 حركات.", color: "#f97316" }, // برتقالي/أحمر فاتح
-  madd_munfasil: { title: "المد المنفصل", desc: "أن يأتي حرف المد آخر الكلمة والهمزة أول الكلمة التالية، يُمَد 4-5 حركات.", color: "#f97316" }, // برتقالي/أحمر فاتح
-  madd_silah_kubra: { title: "مد صلة كبرى", desc: "مد هاء الضمير 4-5 حركات لمجيء همزة قطع بعدها.", color: "#f97316" }, // برتقالي/أحمر فاتح
-  madd_ared: { title: "مد عارض للسكون", desc: "الوقف على الحرف الأخير بالسكون وقبله حرف مد، يُمَد 2، 4، أو 6 حركات.", color: "#f97316" }, // برتقالي/أحمر فاتح
-  madd_lazim: { title: "المد اللازم", desc: "أن يأتي بعد حرف المد سكون أصلي أو حرف مشدد، يُمَد 6 حركات لزوماً.", color: "#9f1239" }, // أحمر غامق
-
-  // 3. أحكام التفخيم والترقيق والصفات
-  tafkheem: { title: "التفخيم", desc: "تسمين الحرف وتغليظه (خص ضغط قظ، والراء أحياناً).", color: "#3b82f6" }, // أزرق
-  tarqeeq: { title: "الترقيق", desc: "تنحيف الحرف ونطقه نحيلاً.", color: "#14b8a6" }, // تركواز (اختياري، بعض المصاحف لا تلونه)
-  qalqalah: { title: "القلقلة", desc: "اضطراب المخرج عند النطق بالحرف ساكناً (قطب جد).", color: "#0ea5e9" }, // أزرق سماوي
-  hamas: { title: "الهمس", desc: "جريان النَّفَس عند النطق بالحرف لضعف الاعتماد على مخرجه.", color: "#8b5cf6" }, // بنفسجي
-  
-  // 4. أحكام أخرى
-  lam_shamsiya: { title: "اللام الشمسية", desc: "لام التعريف المدغمة في الحرف الذي يليها، تكتب ولا تُنطق.", color: "#9ca3af" }, // رمادي
-  lam_qamariya: { title: "اللام القمرية", desc: "لام التعريف المظهرة الساكنة.", color: "#f59e0b" }, // عنبري
-  silent: { title: "حروف تُكتب ولا تُنطق", desc: "حروف زائدة رسماً تسقط في اللفظ (مثل همزة الوصل في درج الكلام، وألف التفريق).", color: "#9ca3af" }, // رمادي
-
-  // الأحكام المضافة لمعالجة اختلاف الإملاء البرمجي
-  idghaam_ghunnah: { title: "إدغام بغنة", desc: "إدغام النون أو التنوين في أحرف (ينمو) مع مصاحبة الغنة.", color: "#10b981" },
-  idghaam_shafawi: { title: "إدغام شفوي", desc: "إدغام الميم الساكنة في الميم المتحركة التي تليها (إدغام متماثلين صغير) مع الغنة.", color: "#10b981" },
-  idghaam_no_ghunnah: { title: "إدغام بغير غنة", desc: "إدغام النون أو التنوين في (ل، ر) إدغاماً كاملاً بدون غنة.", color: "#9ca3af" }
+  madd_lazim_kalimi_muthaqqal: { title: "المد اللازم الكلمي المثقل", desc: "أن يأتي بعد حرف المد حرف مشدد في كلمة.", color: "#dc2626" },
+  madd_lazim_kalimi_mukhaffaf: { title: "المد اللازم الكلمي المخفف", desc: "أن يأتي بعد حرف المد حرف ساكن غير مشدد في كلمة.", color: "#dc2626" },
+  madd_lazim_harfi_muthaqqal: { title: "المد اللازم الحرفي المثقل", desc: "في فواتح السور، حرف مد بعده حرف مشدد.", color: "#dc2626" },
+  madd_lazim_harfi_mukhaffaf: { title: "المد اللازم الحرفي المخفف", desc: "في فواتح السور، حرف مد بعده حرف ساكن مخفف.", color: "#dc2626" },
+  madd_muttasil: { title: "المد المتصل", desc: "أن يأتي حرف المد والهمزة في كلمة واحدة.", color: "#eab308" },
+  madd_munfasil: { title: "المد المنفصل", desc: "أن يأتي حرف المد في آخر كلمة والهمزة في أول الكلمة التي تليها.", color: "#eab308" },
+  madd_silah_kubra: { title: "مد الصلة الكبرى", desc: "هاء الضمير للمفرد الغائب إذا وقعت بين متحركين والثاني همزة.", color: "#eab308" },
+  madd_ared: { title: "المد العارض للسكون", desc: "أن يقع السكون العارض لأجل الوقف بعد حرف مد.", color: "#f97316" },
+  madd_leen: { title: "مد اللين", desc: "الوقف على الواو أو الياء الساكنتين المفتوح ما قبلهما.", color: "#f97316" },
+  madd_tabiee: { title: "المد الطبيعي (الأصلي)", desc: "لا تقوم ذات الحرف إلا به ولا يتوقف على سبب.", color: "#fde047" },
+  madd_silah_sughra: { title: "مد الصلة الصغرى", desc: "هاء الضمير الغائب بين متحركين ليس الثاني همزة.", color: "#fde047" },
+  madd_badal: { title: "مد البدل", desc: "أن تتقدم الهمزة على حرف المد.", color: "#fde047" },
+  madd_iwad: { title: "مد العوض", desc: "الوقف على التنوين المنصوب بألف عوضاً عنه.", color: "#fde047" },
+  ikhfa: { title: "الإخفاء الحقيقي", desc: "النطق بالنون الساكنة بحالة بين الإظهار والإدغام مع الغنة.", color: "#10b981" },
+  ikhfa_shafawi: { title: "الإخفاء الشفوي", desc: "إخفاء الميم الساكنة إذا أتى بعدها حرف الباء مع الغنة.", color: "#10b981" },
+  ghunnah: { title: "غنة النون والميم المشددة", desc: "إخراج صوت الغنة من الخيشوم بمقدار حركتين.", color: "#10b981" },
+  iqlab: { title: "الإقلاب", desc: "قلب النون الساكنة ميماً مخفاة بغنة عند الباء.", color: "#10b981" },
+  idgham_ghunnah: { title: "الإدغام بغنة", desc: "إدغام النون في أحرف (ينمو) مع الغنة.", color: "#10b981" },
+  idgham_shafawi: { title: "الإدغام الشفوي", desc: "إدغام الميم الساكنة في الميم المتحركة (متماثلين صغير).", color: "#10b981" },
+  idgham_no_ghunnah: { title: "الإدغام بغير غنة", desc: "إدغام النون في (ل، ر) إدغاماً كاملاً.", color: "#4b5563" },
+  silent: { title: "تكتب ولا تُلفظ", desc: "حروف صامتة لا تنطق كهمزة الوصل والألف التفريقية.", color: "#4b5563" },
+  idhar_halqi: { title: "الإظهار الحلقي", desc: "إخراج النون الساكنة من مخرجها واضحة بدون غنة زائدة.", color: "#9ca3af" },
+  idhar_shafawi: { title: "الإظهار الشفوي", desc: "إظهار الميم الساكنة عند باقي الحروف.", color: "#9ca3af" },
+  tafkheem_general: { title: "تفخيم الحروف المستعلية", desc: "تغليظ الحرف عند النطق به.", color: "#3b82f6" },
+  tafkheem_lam: { title: "تفخيم اللام", desc: "تفخيم لام لفظ الجلالة إذا سُبقت بفتح أو ضم.", color: "#3b82f6" },
+  tafkheem_ra: { title: "تفخيم الراء", desc: "تفخيم الراء المفتوحة أو المضمومة.", color: "#3b82f6" },
+  tarqeeq_general: { title: "ترقيق الحروف", desc: "تنحيف الحرف عند النطق به.", color: "#a855f7" },
+  tarqeeq_lam: { title: "ترقيق اللام", desc: "ترقيق اللام في لفظ الجلالة إذا سُبقت بكسر.", color: "#a855f7" },
+  tarqeeq_ra: { title: "ترقيق الراء", desc: "ترقيق الراء المكسورة أو الساكنة وقبلها كسر.", color: "#a855f7" },
+  qalqalah_sughra: { title: "قلقلة صغرى", desc: "اضطراب الحرف الساكن في وسط الكلمة.", color: "#06b6d4" },
+  qalqalah_wusta: { title: "قلقلة وسطى", desc: "الوقف على الحرف المقلقل غير المشدد.", color: "#06b6d4" },
+  qalqalah_kubra: { title: "قلقلة كبرى", desc: "الوقف على الحرف المقلقل المشدد.", color: "#06b6d4" },
+  hamas: { title: "الهمس", desc: "جريان النفس عند النطق بالحرف لضعف الاعتماد على المخرج.", color: "#64748b" }
 };
 
 const surahListContainer = document.getElementById('surahList');
