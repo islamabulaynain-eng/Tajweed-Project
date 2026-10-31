@@ -258,49 +258,97 @@ function closeWordDetails() {
   activeWordDetails.classList.remove('flex');
 }
 
+// ----------------------------------------------------
+// الدوال المحدثة (التي ترسم المجموعات وتطبق الفلترة)
+// ----------------------------------------------------
 function renderFilters() {
-  filtersContainer.innerHTML = `<button data-cat="all" onclick="applyFilter('all', this)" class="filter-chip bg-gold-600 text-white px-4 py-1.5 rounded-full text-xs md:text-sm font-bold flex-shrink-0 transition-all shadow-md">الكل</button>`;
-  Object.keys(RULE_INFO).forEach(key => {
-    const title = RULE_INFO[key].title;
-    const btn = document.createElement('button');
-    btn.className = 'filter-chip bg-surface border border-gold-200 text-ink-muted hover:bg-gold-50 hover:border-gold-300 px-3 py-1.5 rounded-full text-xs md:text-sm font-semibold flex-shrink-0 transition-all';
-    btn.textContent = title;
-    btn.dataset.cat = key;
-    btn.onclick = () => applyFilter(key, btn);
-    filtersContainer.appendChild(btn);
+  filtersContainer.innerHTML = '';
+
+  // زر إظهار الكل
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-chip bg-gold-600 text-white shadow-md px-6 py-2 rounded-md font-bold mb-6 mx-auto block transition-all';
+  allBtn.textContent = 'إظهار الكل';
+  allBtn.dataset.cat = 'all';
+  allBtn.onclick = () => applyFilter('all', allBtn);
+  filtersContainer.appendChild(allBtn);
+
+  // بناء المجموعات الأفقية
+  RULE_GROUPS.forEach(group => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'rule-group mb-5 border-b border-gray-200 pb-3 w-full';
+
+    // عنوان المجموعة (غير قابل للضغط)
+    const groupTitle = document.createElement('h3');
+    groupTitle.className = 'text-sm font-bold mb-3';
+    groupTitle.style.color = group.color;
+    groupTitle.textContent = group.title;
+    groupDiv.appendChild(groupTitle);
+
+    // حاوية الأزرار الفرعية
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'flex flex-wrap gap-2';
+
+    group.rules.forEach(ruleKey => {
+      const rule = RULE_INFO[ruleKey];
+      if (!rule) return;
+
+      const btn = document.createElement('button');
+      btn.className = 'filter-chip bg-surface border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-xs md:text-sm hover:bg-gray-100 transition-colors';
+      btn.textContent = rule.title;
+      btn.dataset.cat = ruleKey; // نستخدم dataset.cat ليتوافق مع loadSurah
+      btn.onclick = () => applyFilter(ruleKey, btn);
+      buttonsContainer.appendChild(btn);
+    });
+
+    groupDiv.appendChild(buttonsContainer);
+    filtersContainer.appendChild(groupDiv);
   });
 }
 
 function applyFilter(category, btnElement) {
   currentFilter = category;
   
+  // إعادة ضبط تصميم كل الأزرار
   document.querySelectorAll('.filter-chip').forEach(b => {
-    b.classList.remove('bg-gold-600', 'text-white', 'shadow-md');
-    b.classList.add('bg-surface', 'border-gold-200', 'text-ink-muted');
+    b.classList.remove('bg-gold-600', 'text-white', 'shadow-md', 'border-transparent');
+    b.classList.add('bg-surface', 'border-gray-300', 'text-gray-700');
+    b.style.backgroundColor = '';
+    b.style.color = '';
   });
-  btnElement.classList.remove('bg-surface', 'border-gold-200', 'text-ink-muted');
-  btnElement.classList.add('bg-gold-600', 'text-white', 'shadow-md');
+
+  // تمييز الزر المختار بالألوان المخصصة له
+  if (category !== 'all') {
+    const ruleData = RULE_INFO[category];
+    btnElement.classList.remove('bg-surface', 'border-gray-300', 'text-gray-700');
+    btnElement.style.backgroundColor = ruleData.color;
+    btnElement.style.color = '#ffffff';
+    btnElement.classList.add('shadow-md', 'border-transparent');
+  } else {
+    btnElement.classList.remove('bg-surface', 'border-gray-300', 'text-gray-700');
+    btnElement.classList.add('bg-gold-600', 'text-white', 'shadow-md');
+  }
 
   const allWords = document.querySelectorAll('.word-token');
   
   if (category === 'all') {
-    ruleBriefCard.classList.add('hidden');
+    if(ruleBriefCard) ruleBriefCard.classList.add('hidden');
     allWords.forEach(w => {
       w.classList.remove('opacity-30', 'grayscale');
-      // إعادة النص لحالته الأصلية بدون الـ spans الداخلية
       if(w.dataset.originalText) w.innerHTML = w.dataset.originalText;
     });
     return;
   }
 
   const ruleData = RULE_INFO[category];
-  ruleBriefTitle.textContent = ruleData.title;
-  ruleBriefTitle.style.color = ruleData.color;
-  ruleBriefDesc.textContent = ruleData.desc;
-  ruleBriefCard.style.borderColor = ruleData.color + '60';
-  ruleBriefCard.style.borderRightWidth = '4px';
-  ruleBriefCard.style.borderRightColor = ruleData.color;
-  ruleBriefCard.classList.remove('hidden');
+  if(ruleBriefCard) {
+    ruleBriefTitle.textContent = ruleData.title;
+    ruleBriefTitle.style.color = ruleData.color;
+    ruleBriefDesc.textContent = ruleData.desc;
+    ruleBriefCard.style.borderColor = ruleData.color + '60';
+    ruleBriefCard.style.borderRightWidth = '4px';
+    ruleBriefCard.style.borderRightColor = ruleData.color;
+    ruleBriefCard.classList.remove('hidden');
+  }
 
   allWords.forEach(w => {
     if (!w.dataset.categories && w.innerHTML.includes('﴿')) return;
@@ -309,7 +357,6 @@ function applyFilter(category, btnElement) {
     const rules = tajweedData[wordKey] || [];
     const targetRule = rules.find(r => r.type === category);
 
-    // حفظ النص الأصلي إذا لم يكن محفوظاً
     if (!w.dataset.originalText) {
       w.dataset.originalText = w.textContent;
     }
@@ -317,7 +364,6 @@ function applyFilter(category, btnElement) {
     if (targetRule && targetRule.chars) {
       w.classList.remove('opacity-30', 'grayscale');
       
-      // تقطيع الكلمة وتلوين الحروف المحددة فقط
       const chars = Array.from(w.dataset.originalText);
       let newHtml = '';
       chars.forEach((char, index) => {
