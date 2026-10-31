@@ -259,43 +259,48 @@ function closeWordDetails() {
 }
 
 // ----------------------------------------------------
-// الدوال المحدثة (التي ترسم المجموعات وتطبق الفلترة)
+// الدوال المحدثة (تصميم أفقي مضغوط وإطارات خفيفة)
 // ----------------------------------------------------
 function renderFilters() {
   filtersContainer.innerHTML = '';
 
-  // زر إظهار الكل
+  // زر إظهار الكل (في الأعلى أو المنتصف)
   const allBtn = document.createElement('button');
-  allBtn.className = 'filter-chip bg-gold-600 text-white shadow-md px-6 py-2 rounded-md font-bold mb-6 mx-auto block transition-all';
+  allBtn.className = 'filter-chip bg-gold-600 text-white shadow-sm px-6 py-1.5 rounded-md font-bold mb-3 mx-auto block transition-all text-sm';
   allBtn.textContent = 'إظهار الكل';
   allBtn.dataset.cat = 'all';
   allBtn.onclick = () => applyFilter('all', allBtn);
   filtersContainer.appendChild(allBtn);
 
-  // بناء المجموعات الأفقية
+  // بناء المجموعات
   RULE_GROUPS.forEach(group => {
     const groupDiv = document.createElement('div');
-    groupDiv.className = 'rule-group mb-5 border-b border-gray-200 pb-3 w-full';
+    // إطار خفيف (border-gray-200)، لون خلفية مختلف بسيط (bg-gray-50)، 
+    // ترتيب في نفس السطر (lg:flex-row)، ومسافات أقل (mb-1.5 و p-2)
+    groupDiv.className = 'flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-3 p-2 mb-1.5 bg-gray-50 border border-gray-200 rounded-md w-full';
 
-    // عنوان المجموعة (غير قابل للضغط)
+    // عنوان المجموعة
     const groupTitle = document.createElement('h3');
-    groupTitle.className = 'text-sm font-bold mb-3';
+    // whitespace-nowrap تمنع نزول العنوان لسطرين، shrink-0 تحافظ على حجمه
+    groupTitle.className = 'text-xs md:text-sm font-bold whitespace-nowrap shrink-0';
     groupTitle.style.color = group.color;
-    groupTitle.textContent = group.title;
+    // إضافة نقطتين رأسيتين لشكل أجمل
+    groupTitle.textContent = group.title + " :";
     groupDiv.appendChild(groupTitle);
 
-    // حاوية الأزرار الفرعية
+    // حاوية الأزرار الفرعية (في نفس السطر وتلتف تلقائياً إذا صغرت الشاشة)
     const buttonsContainer = document.createElement('div');
-    buttonsContainer.className = 'flex flex-wrap gap-2';
+    buttonsContainer.className = 'flex flex-wrap gap-1.5 flex-1';
 
     group.rules.forEach(ruleKey => {
       const rule = RULE_INFO[ruleKey];
       if (!rule) return;
 
       const btn = document.createElement('button');
-      btn.className = 'filter-chip bg-surface border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-xs md:text-sm hover:bg-gray-100 transition-colors';
+      // تصغير الأزرار وتغيير خلفيتها للأبيض لتبرز فوق الخلفية الرمادية الفاتحة
+      btn.className = 'filter-chip bg-white border border-gray-200 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-100 transition-colors shadow-sm';
       btn.textContent = rule.title;
-      btn.dataset.cat = ruleKey; // نستخدم dataset.cat ليتوافق مع loadSurah
+      btn.dataset.cat = ruleKey; 
       btn.onclick = () => applyFilter(ruleKey, btn);
       buttonsContainer.appendChild(btn);
     });
@@ -308,23 +313,23 @@ function renderFilters() {
 function applyFilter(category, btnElement) {
   currentFilter = category;
   
-  // إعادة ضبط تصميم كل الأزرار
+  // إعادة ضبط تصميم كل الأزرار الفرعية لحالتها الافتراضية الجديدة (بيضاء)
   document.querySelectorAll('.filter-chip').forEach(b => {
     b.classList.remove('bg-gold-600', 'text-white', 'shadow-md', 'border-transparent');
-    b.classList.add('bg-surface', 'border-gray-300', 'text-gray-700');
+    b.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
     b.style.backgroundColor = '';
     b.style.color = '';
   });
 
-  // تمييز الزر المختار بالألوان المخصصة له
+  // تمييز الزر المختار
   if (category !== 'all') {
     const ruleData = RULE_INFO[category];
-    btnElement.classList.remove('bg-surface', 'border-gray-300', 'text-gray-700');
+    btnElement.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
     btnElement.style.backgroundColor = ruleData.color;
     btnElement.style.color = '#ffffff';
     btnElement.classList.add('shadow-md', 'border-transparent');
   } else {
-    btnElement.classList.remove('bg-surface', 'border-gray-300', 'text-gray-700');
+    btnElement.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
     btnElement.classList.add('bg-gold-600', 'text-white', 'shadow-md');
   }
 
