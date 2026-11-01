@@ -224,7 +224,7 @@ async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
 async function loadTajweedData(surahId) {
   try {
     // تأكد من أن المسار هنا يطابق مكان حفظ مجلد البيانات لديك
-    const response = await fetch(`./data/tajweed_db_final/surah_${surahId}.json`);
+    const response = await fetch(`./data/tajweed_db/surah_${surahId}.json`);
     if (!response.ok) {
       tajweedData = {};
       return;
