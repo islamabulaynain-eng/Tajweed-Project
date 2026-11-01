@@ -1,10 +1,10 @@
-/**
- * Tajweed Processor
- * Handles mapping English rule keys back to Arabic UI labels and injecting CSS classes.
- */
+// 1. إعدادات الـ API والمتغيرات الأساسية
+const API_BASE_URL = 'https://api.quran.com/api/v4';
+let currentSurah = 1;
+let tajweedData = {}; 
 
+// 2. محرك معالجة التجويد الخاص بك (TajweedProcessor)
 const TajweedProcessor = {
-    // 1. Mapping standard keys back to Arabic for tooltips/hover states
     labels: {
         "qalqalah_sughra": "القلقلة الصغرى",
         "qalqalah_kubra": "القلقلة الكبرى",
@@ -21,26 +21,15 @@ const TajweedProcessor = {
         "iqlab": "إقلاب"
     },
 
-    /**
-     * Renders a single word with HTML spans wrapping the characters that have rules.
-     * 
-     * @param {string} wordText - The actual Arabic text of the word (e.g., "بِسْمِ")
-     * @param {Array} wordRules - The array of rules for this word from your JSON 
-     * @returns {string} - HTML string with Tajweed spans applied
-     */
     renderWordHTML(wordText, wordRules) {
         if (!wordRules || wordRules.length === 0) {
             return `<span>${wordText}</span>`;
         }
 
-        // Split word into an array of characters (Array.from handles Unicode safely)
         const characters = Array.from(wordText);
-        
-        // Array to hold CSS classes for each character index
         const charClasses = new Array(characters.length).fill(null).map(() => []);
         const charTooltips = new Array(characters.length).fill(null).map(() => []);
 
-        // Map the rules to the specific character indices
         wordRules.forEach(rule => {
             const ruleClass = `tajweed-${rule.type}`;
             const ruleLabel = this.labels[rule.type] || rule.type;
@@ -53,7 +42,6 @@ const TajweedProcessor = {
             });
         });
 
-        // Rebuild the word with HTML spans
         let htmlOutput = "";
         let currentClasses = "";
         let currentGroupText = "";
@@ -61,12 +49,10 @@ const TajweedProcessor = {
 
         for (let i = 0; i < characters.length; i++) {
             const classesForChar = charClasses[i].join(" ");
-            const tooltipForChar = charTooltips[i].join(" و "); // "and" in Arabic
+            const tooltipForChar = charTooltips[i].join(" و "); 
 
-            // If the CSS classes change, close the previous span and start a new one
             if (classesForChar !== currentClasses) {
                 if (currentGroupText !== "") {
-                    // Close previous span
                     htmlOutput += currentClasses 
                         ? `<span class="${currentClasses}" title="${currentTooltip}">${currentGroupText}</span>`
                         : `<span>${currentGroupText}</span>`;
@@ -79,7 +65,6 @@ const TajweedProcessor = {
             }
         }
 
-        // Append the final group
         if (currentGroupText !== "") {
             htmlOutput += currentClasses 
                 ? `<span class="${currentClasses}" title="${currentTooltip}">${currentGroupText}</span>`
@@ -90,28 +75,89 @@ const TajweedProcessor = {
     }
 };
 
-// ==========================================
-// EXAMPLE USAGE IN YOUR WEBSITE
-// ==========================================
+// 3. دوال التشغيل وجلب البيانات من الـ API
+const quranContainer = document.getElementById('quranContainer'); // تأكد أن الـ ID يطابق الـ HTML الخاص بك
 
-// Assume this is the JSON data fetched from your server (merged_tajweed.json)
-const mergedTajweedData = {
-    "17:1:1": [
-        { "type": "hams", "chars": [1] },
-        { "type": "madd_tabiee", "chars": [3] }
-    ]
-};
-
-// Example function to display an Ayah
-function displayAyah() {
-    const wordKey = "17:1:1";
-    const rawArabicWord = "سُبْحَانَ"; 
-    
-    const rulesForWord = mergedTajweedData[wordKey];
-    
-    // Generate the HTML
-    const formattedHtml = TajweedProcessor.renderWordHTML(rawArabicWord, rulesForWord);
-    
-    // Inject into the DOM
-    document.getElementById("quran-container").innerHTML = formattedHtml;
+async function init() {
+    await loadSurah(currentSurah);
 }
+
+async function loadSurah(surahId) {
+    quranContainer.innerHTML = '<div class="text-center mt-10">جاري تحميل السورة...</div>';
+    
+    try {
+        await loadTajweedData(surahId); 
+        const response = await fetch(`${API_BASE_URL}/verses/by_chapter/${surahId}?language=ar&words=true&word_fields=text_uthmani,line_number,page_number&per_page=300`);
+        const data = await response.json();
+        renderMushaf(data.verses);
+    } catch (error) {
+        quranContainer.innerHTML = '<div class="text-red-500 text-center mt-10">حدث خطأ أثناء تحميل الآيات.</div>';
+    }
+}
+
+async function loadTajweedData(surahId) {
+    try {
+        // تأكد من مسار ملف الـ JSON الخاص بك
+        const response = await fetch(`./data/tajweed_db_final/surah_${surahId}.json`);
+        if (!response.ok) {
+            tajweedData = {};
+            return;
+        }
+        tajweedData = await response.json();
+    } catch (error) {
+        tajweedData = {};
+    }
+}
+
+// 4. رسم المصحف باستخدام الـ TajweedProcessor
+function renderMushaf(verses) {
+    quranContainer.innerHTML = '';
+    const pages = {};
+    
+    // تجميع الكلمات بالصفحات والأسطر
+    verses.forEach(verse => {
+        verse.words.forEach(word => {
+            if (!word.text_uthmani && word.char_type_name !== 'end') return;
+            const p = word.page_number;
+            const l = word.line_number;
+            if (!pages[p]) pages[p] = {};
+            if (!pages[p][l]) pages[p][l] = [];
+            pages[p][l].push({ word, verse });
+        });
+    });
+
+    Object.keys(pages).forEach((pageNum) => {
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'quran-page mb-10';
+
+        const lines = pages[pageNum];
+        Object.keys(lines).forEach((lineNum) => {
+            const lineElements = lines[lineNum];
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'flex flex-wrap items-center justify-between w-full min-h-[3.5rem] leading-none mb-1';
+
+            lineElements.forEach(({ word, verse }) => {
+                const span = document.createElement('span');
+                span.className = 'word-token mx-1 cursor-pointer';
+                
+                if (word.char_type_name === 'end') {
+                    const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+                    span.innerHTML = `<span class="text-gold-500 mx-2">﴿${arabicNumber}﴾</span>`;
+                } else {
+                    const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
+                    span.dataset.key = wordKey;
+                    
+                    // استدعاء دالتك الجديدة لمعالجة الكلمة
+                    const rules = tajweedData[wordKey] || [];
+                    span.innerHTML = TajweedProcessor.renderWordHTML(word.text_uthmani, rules);
+                }
+                lineDiv.appendChild(span);
+            });
+            pageDiv.appendChild(lineDiv);
+        });
+        quranContainer.appendChild(pageDiv);
+    });
+}
+
+// تشغيل التطبيق عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', init);
