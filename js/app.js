@@ -1,12 +1,14 @@
 // ==========================================
-// 1. الإعدادات والمتغيرات والقواميس
+// 1. الإعدادات والمتغيرات الأساسية
 // ==========================================
 const API_BASE_URL = 'https://api.quran.com/api/v4';
 let currentSurah = 1;
 let currentFilter = 'all';
 let tajweedData = {};
 
-// مجموعات الفلاتر الأفقية
+// ==========================================
+// 2. قواميس الأحكام والمجموعات
+// ==========================================
 const RULE_GROUPS = [
   { id: "madd_6", title: "🔴 مد 6 حركات لزوماً", color: "#dc2626", rules: ["madd_lazim_kalimi_muthaqqal", "madd_lazim_kalimi_mukhaffaf", "madd_lazim_harfi_muthaqqal", "madd_lazim_harfi_mukhaffaf"] },
   { id: "madd_4_5", title: "🟡 مد 4 أو 5 حركات (واجب وجائز)", color: "#eab308", rules: ["madd_muttasil", "madd_munfasil", "madd_silah_kubra"] },
@@ -21,7 +23,6 @@ const RULE_GROUPS = [
   { id: "hamas", title: "🤍 همس", color: "#64748b", rules: ["hamas"] }
 ];
 
-// القاموس التفصيلي لكل حكم
 const RULE_INFO = {
   madd_lazim_kalimi_muthaqqal: { title: "المد اللازم الكلمي المثقل", desc: "أن يأتي بعد حرف المد حرف مشدد في كلمة.", color: "#dc2626" },
   madd_lazim_kalimi_mukhaffaf: { title: "المد اللازم الكلمي المخفف", desc: "أن يأتي بعد حرف المد حرف ساكن غير مشدد في كلمة.", color: "#dc2626" },
@@ -59,7 +60,7 @@ const RULE_INFO = {
 };
 
 // ==========================================
-// 2. محرك التلوين وبناء الـ HTML (TajweedProcessor)
+// 3. محرك معالجة التجويد (TajweedProcessor)
 // ==========================================
 const TajweedProcessor = {
     renderWordHTML(wordText, wordRules) {
@@ -74,6 +75,7 @@ const TajweedProcessor = {
         wordRules.forEach(rule => {
             const ruleClass = `tajweed-${rule.type}`;
             const ruleInfo = RULE_INFO[rule.type];
+            // نجلب الاسم العربي من القاموس لعرضه عند تمرير الماوس
             const ruleLabel = ruleInfo ? ruleInfo.title : rule.type;
 
             rule.chars.forEach(charIndex => {
@@ -118,7 +120,7 @@ const TajweedProcessor = {
 };
 
 // ==========================================
-// 3. عناصر الواجهة (DOM Elements)
+// 4. ربط عناصر الواجهة (DOM Elements)
 // ==========================================
 const surahListContainer = document.getElementById('surahList');
 const quranContainer = document.getElementById('quranContainer');
@@ -129,12 +131,9 @@ const defaultDetailsState = document.getElementById('defaultDetailsState');
 const activeWordDetails = document.getElementById('activeWordDetails');
 const selectedWordEl = document.getElementById('selectedWord');
 const rulesListEl = document.getElementById('rulesList');
-
-// عناصر بطاقة شرح الحكم أعلى الصفحة
 const ruleBriefCard = document.getElementById('ruleBriefCard');
 const ruleBriefTitle = document.getElementById('ruleBriefTitle');
 const ruleBriefDesc = document.getElementById('ruleBriefDesc');
-
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
 const surahIndexSidebar = document.getElementById('surahIndexSidebar');
@@ -150,10 +149,10 @@ if(closeMobileMenuBtn) closeMobileMenuBtn.onclick = toggleMobileMenu;
 if(mobileOverlay) mobileOverlay.onclick = toggleMobileMenu;
 
 // ==========================================
-// 4. دوال التشغيل الأساسية وجلب البيانات
+// 5. دوال التشغيل الأساسية وجلب البيانات
 // ==========================================
 async function init() {
-  renderFilters(); // رسم الفلاتر الأفقية أعلى الصفحة
+  renderFilters();
   await fetchSurahList();
   await loadSurah(currentSurah);
 }
@@ -162,7 +161,7 @@ async function fetchSurahList() {
   try {
     const response = await fetch(`${API_BASE_URL}/chapters?language=ar`);
     const data = await response.json();
-    surahListContainer.innerHTML = ''; 
+    if(surahListContainer) surahListContainer.innerHTML = ''; 
     
     data.chapters.forEach(chapter => {
       const btn = document.createElement('button');
@@ -176,14 +175,15 @@ async function fetchSurahList() {
           if(window.innerWidth < 1024) toggleMobileMenu();
         }
       };
-      surahListContainer.appendChild(btn);
+      if(surahListContainer) surahListContainer.appendChild(btn);
     });
   } catch (error) {
-    surahListContainer.innerHTML = '<div class="text-red-500 text-center text-sm p-4">حدث خطأ في تحميل الفهرس.</div>';
+    if(surahListContainer) surahListContainer.innerHTML = '<div class="text-red-500 text-center text-sm p-4">حدث خطأ في تحميل الفهرس.</div>';
   }
 }
 
 function updateSurahSelection(id) {
+  if(!surahListContainer) return;
   Array.from(surahListContainer.children).forEach((btn, index) => {
     if (index + 1 === id) {
       btn.className = 'w-full text-right p-2 rounded mb-1 transition-colors text-sm font-semibold bg-gold-100 text-gold-700 border border-gold-200';
@@ -194,13 +194,13 @@ function updateSurahSelection(id) {
 }
 
 async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
-  quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
-  currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
+  if(quranContainer) quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
+  if(currentSurahTitle) currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
   
   if (surahId !== 1 && surahId !== 9) {
-    basmalahHeader.classList.remove('hidden');
+    if(basmalahHeader) basmalahHeader.classList.remove('hidden');
   } else {
-    basmalahHeader.classList.add('hidden');
+    if(basmalahHeader) basmalahHeader.classList.add('hidden');
   }
 
   closeWordDetails(); 
@@ -211,18 +211,19 @@ async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
     const data = await response.json();
     renderMushaf(data.verses);
     
-    // إذا كان هناك فلتر مفعل، قم بتطبيقه على السورة الجديدة
+    // إعادة تطبيق الفلتر إذا كان مفحوصاً مسبقاً
     if(currentFilter !== 'all') {
       const activeFilterBtn = document.querySelector(`.filter-chip[data-cat="${currentFilter}"]`);
       if(activeFilterBtn) applyFilter(currentFilter, activeFilterBtn);
     }
   } catch (error) {
-    quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10 p-4">حدث خطأ أثناء تحميل الآيات.</div>';
+    if(quranContainer) quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10 p-4">حدث خطأ أثناء تحميل الآيات.</div>';
   }
 }
 
 async function loadTajweedData(surahId) {
   try {
+    // تأكد من أن المسار هنا يطابق مكان حفظ مجلد البيانات لديك
     const response = await fetch(`./data/tajweed_db_final/surah_${surahId}.json`);
     if (!response.ok) {
       tajweedData = {};
@@ -235,9 +236,10 @@ async function loadTajweedData(surahId) {
 }
 
 // ==========================================
-// 5. رسم المصحف وتلوينه
+// 6. رسم الآيات وتطبيق الألوان
 // ==========================================
 function renderMushaf(verses) {
+  if(!quranContainer) return;
   quranContainer.innerHTML = '';
   const pages = {};
   
@@ -278,10 +280,11 @@ function renderMushaf(verses) {
         } else {
           const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
           span.dataset.key = wordKey;
-          span.dataset.originalText = word.text_uthmani; // حفظ النص الأصلي للفلترة
+          span.dataset.originalText = word.text_uthmani; 
           
           const rules = tajweedData[wordKey] || [];
-          // تلوين الكلمة باستخدام المحرك
+          
+          // نستخدم المحرك لدمج الـ CSS Classes مع الكلمة
           span.innerHTML = TajweedProcessor.renderWordHTML(word.text_uthmani, rules);
           span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
         }
@@ -294,7 +297,7 @@ function renderMushaf(verses) {
 }
 
 // ==========================================
-// 6. الفلاتر الأفقية واللوحة الجانبية
+// 7. أزرار الفلترة وشرح الأحكام الجانبية
 // ==========================================
 function renderFilters() {
   if(!filtersContainer) return;
@@ -340,7 +343,6 @@ function renderFilters() {
 function applyFilter(category, btnElement) {
   currentFilter = category;
   
-  // تحديث تصميم الأزرار
   document.querySelectorAll('.filter-chip').forEach(b => {
     b.classList.remove('bg-gold-600', 'text-white', 'shadow-md', 'border-transparent');
     b.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
@@ -363,7 +365,6 @@ function applyFilter(category, btnElement) {
 
   const allWords = document.querySelectorAll('.word-token');
   
-  // حالة إظهار الكل: نعيد تلوين الكلمة بكل الأحكام الموجودة فيها
   if (category === 'all') {
     if(ruleBriefCard) ruleBriefCard.classList.add('hidden');
     allWords.forEach(w => {
@@ -373,3 +374,75 @@ function applyFilter(category, btnElement) {
           const rules = tajweedData[wordKey] || [];
           w.innerHTML = TajweedProcessor.renderWordHTML(w.dataset.originalText, rules);
       }
+    });
+    return;
+  }
+
+  const ruleData = RULE_INFO[category];
+  if(ruleBriefCard && ruleData) {
+    ruleBriefTitle.textContent = ruleData.title;
+    ruleBriefTitle.style.color = ruleData.color;
+    ruleBriefDesc.textContent = ruleData.desc;
+    ruleBriefCard.style.borderColor = ruleData.color + '60';
+    ruleBriefCard.style.borderRightWidth = '4px';
+    ruleBriefCard.style.borderRightColor = ruleData.color;
+    ruleBriefCard.classList.remove('hidden');
+  }
+
+  allWords.forEach(w => {
+    const wordKey = w.dataset.key;
+    if (!wordKey) return; 
+    
+    const rules = tajweedData[wordKey] || [];
+    const targetRule = rules.find(r => r.type === category);
+
+    if (targetRule) {
+      w.classList.remove('opacity-30', 'grayscale');
+      w.innerHTML = TajweedProcessor.renderWordHTML(w.dataset.originalText, [targetRule]);
+    } else {
+      w.innerHTML = `<span>${w.dataset.originalText}</span>`; 
+      w.classList.add('opacity-30', 'grayscale'); 
+    }
+  });
+}
+
+function openWordDetails(wordText, wordKey, rules) {
+  document.querySelectorAll('.word-token.bg-gold-50').forEach(el => el.classList.remove('bg-gold-50'));
+  const wordEl = document.querySelector(`span[data-key="${wordKey}"]`);
+  if (wordEl) wordEl.classList.add('bg-gold-50');
+
+  if(defaultDetailsState) defaultDetailsState.classList.add('hidden');
+  if(activeWordDetails) {
+      activeWordDetails.classList.remove('hidden');
+      activeWordDetails.classList.add('flex');
+  }
+  
+  if(selectedWordEl) selectedWordEl.textContent = wordText;
+  if(rulesListEl) rulesListEl.innerHTML = '';
+  
+  if (rules && rules.length > 0) {
+    rules.forEach(rule => {
+      const ruleInfo = RULE_INFO[rule.type] || { title: rule.type, desc: "", color: "#D4AF37" };
+      rulesListEl.innerHTML += `
+        <div class="bg-surface border rounded-lg p-3 text-right" style="border-right: 4px solid ${ruleInfo.color}; border-color: ${ruleInfo.color}40;">
+          <div class="font-bold text-sm mb-1" style="color: ${ruleInfo.color}">${ruleInfo.title}</div>
+          <div class="text-ink-main text-sm leading-relaxed">${rule.text || ruleInfo.desc}</div>
+        </div>
+      `;
+    });
+  } else {
+    rulesListEl.innerHTML = `<div class="text-ink-muted text-sm text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-200">لا توجد أحكام تجويدية مسجلة لهذه الكلمة حالياً.</div>`;
+  }
+}
+
+function closeWordDetails() {
+  document.querySelectorAll('.word-token.bg-gold-50').forEach(el => el.classList.remove('bg-gold-50'));
+  if(defaultDetailsState) defaultDetailsState.classList.remove('hidden');
+  if(activeWordDetails) {
+      activeWordDetails.classList.add('hidden');
+      activeWordDetails.classList.remove('flex');
+  }
+}
+
+// بدء التشغيل
+document.addEventListener('DOMContentLoaded', init);
