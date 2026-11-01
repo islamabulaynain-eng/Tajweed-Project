@@ -1,24 +1,97 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>Quran Tajweed</title>
-    
-    <style>
-        /* Paste the required CSS here */
-        [class*="tajweed-"] {
-            cursor: help;
-        }
-        .tajweed-qalqalah_sughra {
-            color: #3498db;
-            font-weight: bold;
-        }
-        /* ... rest of the CSS ... */
-    </style>
+/* إعدادات عامة للحروف الملونة (لإظهار مؤشر الماوس كعلامة مساعدة) */
+[class*="tajweed-"] {
+    cursor: help;
+    transition: all 0.2s ease;
+}
 
-</head>
-<body>
-    <!-- Your Quran text container -->
-    <div id="quran-container"></div>
-</body>
-</html>
+[class*="tajweed-"]:hover {
+    filter: brightness(0.85); /* تأثير بسيط عند تمرير الماوس على الحكم */
+}
+
+/* 🔴 المد اللازم (أحمر) */
+.tajweed-madd_lazim_kalimi_muthaqqal,
+.tajweed-madd_lazim_kalimi_mukhaffaf,
+.tajweed-madd_lazim_harfi_muthaqqal,
+.tajweed-madd_lazim_harfi_mukhaffaf { 
+    color: #dc2626; 
+    font-weight: bold; 
+}
+
+/* 🟡 مد 4 أو 5 حركات (أصفر غامق) */
+.tajweed-madd_muttasil,
+.tajweed-madd_munfasil,
+.tajweed-madd_silah_kubra { 
+    color: #eab308; 
+    font-weight: bold; 
+}
+
+/* 🟠 مد 2 أو 4 أو 6 حركات (برتقالي) */
+.tajweed-madd_ared,
+.tajweed-madd_leen { 
+    color: #f97316; 
+    font-weight: bold; 
+}
+
+/* 🟡 مد حركتان (أصفر فاتح) */
+.tajweed-madd_tabiee,
+.tajweed-madd_silah_sughra,
+.tajweed-madd_badal,
+.tajweed-madd_iwad { 
+    color: #fde047; 
+    font-weight: bold; 
+}
+
+/* 🟢 الغنة والإخفاء والإدغام بغنة (أخضر) */
+.tajweed-ikhfa,
+.tajweed-ikhfa_shafawi,
+.tajweed-ghunnah,
+.tajweed-iqlab,
+.tajweed-idgham_ghunnah,
+.tajweed-idgham_shafawi { 
+    color: #10b981; 
+    font-weight: bold; 
+}
+
+/* ⚫ الإدغام بغير غنة والصامت (رمادي غامق) */
+.tajweed-idgham_no_ghunnah,
+.tajweed-silent { 
+    color: #4b5563; 
+    font-weight: bold; 
+}
+
+/* ⚪ الإظهار (رمادي فاتح) */
+.tajweed-idhar_halqi,
+.tajweed-idhar_shafawi { 
+    color: #9ca3af; 
+    font-weight: bold; 
+}
+
+/* 🔵 التفخيم (أزرق) */
+.tajweed-tafkheem_general,
+.tajweed-tafkheem_lam,
+.tajweed-tafkheem_ra { 
+    color: #3b82f6; 
+    font-weight: bold; 
+}
+
+/* 🟣 الترقيق (بنفسجي) */
+.tajweed-tarqeeq_general,
+.tajweed-tarqeeq_lam,
+.tajweed-tarqeeq_ra { 
+    color: #a855f7; 
+    font-weight: bold; 
+}
+
+/* 🩵 القلقلة (سماوي) */
+.tajweed-qalqalah_sughra,
+.tajweed-qalqalah_wusta,
+.tajweed-qalqalah_kubra { 
+    color: #06b6d4; 
+    font-weight: bold; 
+}
+
+/* 🤍 الهمس (رمادي مزرق) */
+.tajweed-hamas { 
+    color: #64748b; 
+    font-weight: bold; 
+}
