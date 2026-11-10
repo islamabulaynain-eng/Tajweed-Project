@@ -193,33 +193,7 @@ function updateSurahSelection(id) {
   });
 }
 
-async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
-  if(quranContainer) quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
-  if(currentSurahTitle) currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
-  
-  if (surahId !== 1 && surahId !== 9) {
-    if(basmalahHeader) basmalahHeader.classList.remove('hidden');
-  } else {
-    if(basmalahHeader) basmalahHeader.classList.add('hidden');
-  }
 
-  closeWordDetails(); 
-
-  try {
-    await loadTajweedData(surahId); 
-    const response = await fetch(`${API_BASE_URL}/verses/by_chapter/${surahId}?language=ar&words=true&word_fields=text_uthmani,line_number,page_number&per_page=300`);
-    const data = await response.json();
-    renderMushaf(data.verses);
-    
-    // إعادة تطبيق الفلتر إذا كان مفحوصاً مسبقاً
-    if(currentFilter !== 'all') {
-      const activeFilterBtn = document.querySelector(`.filter-chip[data-cat="${currentFilter}"]`);
-      if(activeFilterBtn) applyFilter(currentFilter, activeFilterBtn);
-    }
-  } catch (error) {
-    if(quranContainer) quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10 p-4">حدث خطأ أثناء تحميل الآيات.</div>';
-  }
-}
 
 async function loadTajweedData(surahId) {
   try {
@@ -235,65 +209,120 @@ async function loadTajweedData(surahId) {
   }
 }
 
-// ==========================================
-// 6. رسم الآيات وتطبيق الألوان
-// ==========================================
-function renderMushaf(verses) {
-  if(!quranContainer) return;
-  quranContainer.innerHTML = '';
-  const pages = {};
-  
-  verses.forEach(verse => {
-    verse.words.forEach(word => {
-      if (!word.text_uthmani && word.char_type_name !== 'end') return;
-      const p = word.page_number;
-      const l = word.line_number;
-      if (!pages[p]) pages[p] = {};
-      if (!pages[p][l]) pages[p][l] = [];
-      pages[p][l].push({ word, verse });
-    });
-  });
 
-  Object.keys(pages).forEach((pageNum) => {
-    const pageBreak = document.createElement('div');
-    pageBreak.className = 'w-full border-b border-dashed border-gold-300 my-8 relative flex justify-center';
-    pageBreak.innerHTML = `<span class="absolute -top-3 bg-surface px-4 text-gold-600 text-xs font-bold border border-gold-200 rounded-full font-cairo shadow-sm">صفحة ${pageNum}</span>`;
-    quranContainer.appendChild(pageBreak);
+// ==========================================
+// 5. دوال جلب وبناء الآيات (الاعتماد على الملف المحلي)
+// ==========================================
+let allQuranText = null; // متغير لتخزين نص القرآن كاملاً في الذاكرة لتسريع التنقل
 
-    const lines = pages[pageNum];
+async function loadQuranText() {
+    if (allQuranText) return allQuranText;
+    try {
+        const response = await fetch('./data/quran-uthmani-min.txt');
+        const text = await response.text();
+        allQuranText = text.split('\n').filter(line => line.trim() !== '');
+        return allQuranText;
+    } catch (error) {
+        console.error("خطأ في تحميل ملف القرآن:", error);
+        return [];
+    }
+}
+
+async function loadSurah(surahId, surahName = 'الفَاتِحَة') {
+    if(quranContainer) quranContainer.innerHTML = '<div class="text-center text-ink-muted text-lg mt-10 flex flex-col items-center gap-3"><i class="ph-duotone ph-spinner-gap animate-spin text-3xl text-gold-500"></i> جاري تحميل السورة...</div>';
+    if(currentSurahTitle) currentSurahTitle.textContent = `سُورَةُ ${surahName}`;
     
-    Object.keys(lines).forEach((lineNum) => {
-      const lineElements = lines[lineNum];
-      const lineDiv = document.createElement('div');
-      
-      const isShortLine = lineElements.length < 7;
-      lineDiv.className = `flex flex-wrap items-center w-full min-h-[3.5rem] leading-none mb-1 ${isShortLine ? 'justify-center gap-3 md:gap-5' : 'justify-between'}`;
+    // إظهار أو إخفاء البسملة الثابتة
+    if (surahId !== 1 && surahId !== 9) {
+        if(basmalahHeader) basmalahHeader.classList.remove('hidden');
+    } else {
+        if(basmalahHeader) basmalahHeader.classList.add('hidden');
+    }
 
-      lineElements.forEach(({ word, verse }) => {
-        const span = document.createElement('span');
-        span.className = 'word-token relative mx-1 cursor-pointer';
+    closeWordDetails(); 
+
+    try {
+        // 1. تحميل بيانات التجويد
+        await loadTajweedData(surahId); 
         
-        if (word.char_type_name === 'end') {
-          span.className = 'inline-flex items-center justify-center w-8 h-8 mx-1 text-gold-500 font-quran text-lg md:text-xl align-middle';
-          const arabicNumber = verse.verse_number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-          span.innerHTML = `﴿${arabicNumber}﴾`;
-        } else {
-          const wordKey = `${currentSurah}:${verse.verse_number}:${word.position}`;
-          span.dataset.key = wordKey;
-          span.dataset.originalText = word.text_uthmani; 
-          
-          const rules = tajweedData[wordKey] || [];
-          
-          // نستخدم المحرك لدمج الـ CSS Classes مع الكلمة
-          span.innerHTML = TajweedProcessor.renderWordHTML(word.text_uthmani, rules);
-          span.onclick = () => openWordDetails(word.text_uthmani, wordKey, rules);
+        // 2. تحميل النص القرآني واستخراج السورة المحددة
+        const quranLines = await loadQuranText();
+        const surahVerses = [];
+        
+        // البحث عن الآيات التي تبدأ برقم السورة (مثلاً "1|" للفاتحة)
+        const surahPrefix = `${surahId}|`;
+        quranLines.forEach(line => {
+            if (line.startsWith(surahPrefix)) {
+                const parts = line.split('|');
+                if (parts.length >= 3) {
+                    surahVerses.push({
+                        chapter: parseInt(parts[0]),
+                        ayah: parseInt(parts[1]),
+                        text: parts[2].trim()
+                    });
+                }
+            }
+        });
+
+        // 3. رسم المصحف
+        renderMushafLocal(surahVerses);
+        
+        // إعادة تطبيق الفلتر إذا كان مفعلًا
+        if(currentFilter !== 'all') {
+            const activeFilterBtn = document.querySelector(`.filter-chip[data-cat="${currentFilter}"]`);
+            if(activeFilterBtn) applyFilter(currentFilter, activeFilterBtn);
         }
-        lineDiv.appendChild(span);
-      });
-      
-      quranContainer.appendChild(lineDiv);
+    } catch (error) {
+        if(quranContainer) quranContainer.innerHTML = '<div class="text-red-500 text-center text-lg mt-10 p-4">حدث خطأ أثناء تحميل الآيات. يرجى التأكد من مسار ملف quran-uthmani-min.txt</div>';
+    }
+}
+
+function renderMushafLocal(verses) {
+    if(!quranContainer) return;
+    quranContainer.innerHTML = '';
+    
+    // إنشاء حاوية واحدة للسورة
+    const pageDiv = document.createElement('div');
+    pageDiv.className = 'w-full text-justify flex flex-wrap items-center justify-center gap-x-2 gap-y-4 leading-[2.5] mt-4';
+    pageDiv.style.textAlignLast = 'center';
+
+    verses.forEach(verse => {
+        let ayahText = verse.text;
+        
+        // مسح البسملة من أول آية في السور (لأننا نضعها كعنوان ثابت)، ما عدا الفاتحة لأنها الآية الأولى
+        if (verse.ayah === 1 && currentSurah !== 1 && currentSurah !== 9) {
+            ayahText = ayahText.replace(/^بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ ?/, '');
+        }
+
+        const words = ayahText.split(' ').filter(w => w.length > 0);
+        
+        words.forEach((wordText, index) => {
+            const wordPosition = index + 1;
+            const span = document.createElement('span');
+            span.className = 'word-token relative mx-1 cursor-pointer';
+            
+            const wordKey = `${currentSurah}:${verse.ayah}:${wordPosition}`;
+            span.dataset.key = wordKey;
+            span.dataset.originalText = wordText; 
+            
+            const rules = tajweedData[wordKey] || [];
+            
+            // تلوين الكلمة
+            span.innerHTML = TajweedProcessor.renderWordHTML(wordText, rules);
+            span.onclick = () => openWordDetails(wordText, wordKey, rules);
+            
+            pageDiv.appendChild(span);
+        });
+
+        // إضافة رقم الآية في النهاية
+        const numSpan = document.createElement('span');
+        numSpan.className = 'inline-flex items-center justify-center w-8 h-8 mx-2 text-gold-500 font-quran text-lg md:text-xl align-middle';
+        const arabicNumber = verse.ayah.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        numSpan.innerHTML = `﴿${arabicNumber}﴾`;
+        pageDiv.appendChild(numSpan);
     });
-  });
+    
+    quranContainer.appendChild(pageDiv);
 }
 
 // ==========================================
