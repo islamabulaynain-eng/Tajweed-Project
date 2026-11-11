@@ -21,7 +21,21 @@
             ]
         }
     ],
+    "67:1:5": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                5
+            ]
+        }
+    ],
     "67:1:6": [
+        {
+            "type": "silent",
+            "chars": [
+                4
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -38,6 +52,12 @@
         }
     ],
     "67:1:9": [
+        {
+            "type": "silent",
+            "chars": [
+                1
+            ]
+        },
         {
             "type": "tarqeeq_ra",
             "chars": [
@@ -59,11 +79,31 @@
             ]
         }
     ],
+    "67:2:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:2:4": [
+        {
+            "type": "silent",
+            "chars": [
+                2
+            ]
+        },
+        {
+            "type": "silent",
+            "chars": [
+                9
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
-                8
+                10
             ]
         }
     ],
@@ -107,6 +147,12 @@
     ],
     "67:2:10": [
         {
+            "type": "silent",
+            "chars": [
+                5
+            ]
+        },
+        {
             "type": "madd_ared",
             "chars": [
                 5
@@ -115,11 +161,25 @@
     ],
     "67:2:11": [
         {
+            "type": "silent",
+            "chars": [
+                9
+            ]
+        },
+        {
             "type": "tafkheem_ra",
             "chars": [
                 6
             ]
         },
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
+    "67:2:12": [
         {
             "type": "madd_ared",
             "chars": [
@@ -147,14 +207,20 @@
         {
             "type": "madd_tabiee",
             "chars": [
-                3,
-                5
+                4
+            ]
+        },
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                7
             ]
         },
         {
             "type": "ikhfa",
             "chars": [
-                6
+                9,
+                10
             ]
         }
     ],
@@ -199,6 +265,12 @@
     ],
     "67:3:10": [
         {
+            "type": "silent",
+            "chars": [
+                4
+            ]
+        },
+        {
             "type": "hamas",
             "chars": [
                 5
@@ -213,9 +285,15 @@
     ],
     "67:3:11": [
         {
+            "type": "madd_tabiee",
+            "chars": [
+                6
+            ]
+        },
+        {
             "type": "ikhfa",
             "chars": [
-                2
+                12
             ]
         }
     ],
@@ -236,6 +314,27 @@
     ],
     "67:3:13": [
         {
+            "type": "madd_tabiee",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "ikhfa",
+            "chars": [
+                4,
+                5,
+                6,
+                7
+            ]
+        },
+        {
+            "type": "silent",
+            "chars": [
+                8
+            ]
+        },
+        {
             "type": "tafkheem_ra",
             "chars": [
                 3
@@ -247,6 +346,14 @@
             "type": "tafkheem_ra",
             "chars": [
                 6
+            ]
+        }
+    ],
+    "67:3:15": [
+        {
+            "type": "silent",
+            "chars": [
+                3
             ]
         }
     ],
@@ -268,6 +375,15 @@
     ],
     "67:3:18": [
         {
+            "type": "ikhfa",
+            "chars": [
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        {
             "type": "tafkheem_ra",
             "chars": [
                 4
@@ -280,15 +396,31 @@
             ]
         }
     ],
+    "67:3:19": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                1
+            ]
+        }
+    ],
     "67:4:1": [
         {
             "type": "ghunnah",
             "chars": [
-                2
+                2,
+                3,
+                4
             ]
         }
     ],
     "67:4:2": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -297,6 +429,12 @@
         }
     ],
     "67:4:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -314,19 +452,27 @@
     ],
     "67:4:5": [
         {
+            "type": "ikhfa",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        },
+        {
             "type": "qalqalah_kubra",
             "chars": [
                 7
             ]
-        },
-        {
-            "type": "ikhfa",
-            "chars": [
-                2
-            ]
         }
     ],
     "67:4:7": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -352,15 +498,15 @@
     ],
     "67:4:10": [
         {
-            "type": "tarqeeq_ra",
+            "type": "madd_ared",
             "chars": [
                 4
             ]
         },
         {
-            "type": "madd_ared",
+            "type": "tarqeeq_ra",
             "chars": [
-                3
+                4
             ]
         }
     ],
@@ -368,20 +514,34 @@
         {
             "type": "ghunnah",
             "chars": [
-                5
+                5,
+                6,
+                7
             ]
         }
     ],
     "67:5:3": [
         {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
             "type": "madd_muttasil",
             "chars": [
-                0,
-                6
+                7,
+                8
             ]
         }
     ],
     "67:5:4": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -394,7 +554,7 @@
         {
             "type": "madd_tabiee",
             "chars": [
-                5
+                6
             ]
         }
     ],
@@ -402,7 +562,7 @@
         {
             "type": "madd_tabiee",
             "chars": [
-                8
+                9
             ]
         }
     ],
@@ -417,6 +577,14 @@
             "type": "idgham_no_ghunnah",
             "chars": [
                 6
+            ]
+        }
+    ],
+    "67:5:8": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                7
             ]
         }
     ],
@@ -438,6 +606,12 @@
     ],
     "67:5:12": [
         {
+            "type": "silent",
+            "chars": [
+                3
+            ]
+        },
+        {
             "type": "tarqeeq_ra",
             "chars": [
                 7
@@ -450,6 +624,14 @@
             ]
         }
     ],
+    "67:5:13": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                2
+            ]
+        }
+    ],
     "67:6:1": [
         {
             "type": "madd_tabiee",
@@ -459,6 +641,13 @@
         }
     ],
     "67:6:2": [
+        {
+            "type": "silent",
+            "chars": [
+                7,
+                8
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -492,7 +681,9 @@
         {
             "type": "ghunnah",
             "chars": [
-                4
+                4,
+                5,
+                6
             ]
         }
     ],
@@ -510,15 +701,39 @@
             ]
         }
     ],
+    "67:6:7": [
+        {
+            "type": "silent",
+            "chars": [
+                7
+            ]
+        }
+    ],
+    "67:6:8": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
     "67:7:1": [
         {
             "type": "madd_munfasil",
             "chars": [
-                3
+                4,
+                5
             ]
         }
     ],
     "67:7:2": [
+        {
+            "type": "silent",
+            "chars": [
+                7,
+                8
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -535,6 +750,13 @@
         }
     ],
     "67:7:4": [
+        {
+            "type": "silent",
+            "chars": [
+                7,
+                8
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -570,6 +792,14 @@
             ]
         }
     ],
+    "67:7:8": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                4
+            ]
+        }
+    ],
     "67:8:1": [
         {
             "type": "madd_tabiee",
@@ -580,6 +810,12 @@
     ],
     "67:8:4": [
         {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
             "type": "madd_munfasil",
             "chars": [
                 6
@@ -587,6 +823,13 @@
         }
     ],
     "67:8:6": [
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                5,
+                6
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -612,6 +855,14 @@
     ],
     "67:8:9": [
         {
+            "type": "ikhfa",
+            "chars": [
+                3,
+                4,
+                5
+            ]
+        },
+        {
             "type": "madd_munfasil",
             "chars": [
                 9
@@ -619,6 +870,13 @@
         }
     ],
     "67:8:11": [
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                8,
+                9
+            ]
+        },
         {
             "type": "idhar_shafawi",
             "chars": [
@@ -640,7 +898,22 @@
             ]
         }
     ],
+    "67:8:14": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                2
+            ]
+        }
+    ],
     "67:9:1": [
+        {
+            "type": "silent",
+            "chars": [
+                6,
+                7
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -669,20 +942,20 @@
         {
             "type": "madd_muttasil",
             "chars": [
-                1,
-                5
+                2,
+                3
             ]
         }
     ],
     "67:9:5": [
         {
-            "type": "tafkheem_ra",
+            "type": "ikhfa",
             "chars": [
-                4
+                6
             ]
         },
         {
-            "type": "ikhfa",
+            "type": "tafkheem_ra",
             "chars": [
                 4
             ]
@@ -697,6 +970,12 @@
         }
     ],
     "67:9:10": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "tafkheem_lam",
             "chars": [
@@ -721,21 +1000,53 @@
             ]
         }
     ],
-    "67:9:18": [
+    "67:9:14": [
         {
-            "type": "tarqeeq_ra",
+            "type": "ikhfa",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "67:9:17": [
+        {
+            "type": "madd_tabiee",
             "chars": [
                 4
             ]
         },
         {
+            "type": "ikhfa",
+            "chars": [
+                6,
+                7
+            ]
+        }
+    ],
+    "67:9:18": [
+        {
             "type": "madd_ared",
             "chars": [
                 3
             ]
+        },
+        {
+            "type": "tarqeeq_ra",
+            "chars": [
+                4
+            ]
         }
     ],
     "67:10:1": [
+        {
+            "type": "silent",
+            "chars": [
+                8,
+                9
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -748,7 +1059,9 @@
         {
             "type": "ghunnah",
             "chars": [
-                2
+                2,
+                3,
+                4
             ]
         }
     ],
@@ -770,13 +1083,36 @@
     ],
     "67:10:8": [
         {
+            "type": "ghunnah",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        },
+        {
             "type": "madd_munfasil",
             "chars": [
                 1
             ]
         }
     ],
+    "67:10:9": [
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                2,
+                3
+            ]
+        }
+    ],
     "67:10:10": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                6
+            ]
+        },
         {
             "type": "tarqeeq_ra",
             "chars": [
@@ -790,7 +1126,28 @@
             ]
         }
     ],
+    "67:10:11": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                6
+            ]
+        }
+    ],
     "67:11:1": [
+        {
+            "type": "silent",
+            "chars": [
+                2
+            ]
+        },
+        {
+            "type": "silent",
+            "chars": [
+                12,
+                13
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -808,7 +1165,8 @@
         {
             "type": "iqlab",
             "chars": [
-                4
+                5,
+                6
             ]
         },
         {
@@ -819,6 +1177,12 @@
         }
     ],
     "67:11:4": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                9
+            ]
+        },
         {
             "type": "hamas",
             "chars": [
@@ -833,6 +1197,12 @@
         }
     ],
     "67:11:5": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                6
+            ]
+        },
         {
             "type": "hamas",
             "chars": [
@@ -858,11 +1228,19 @@
         {
             "type": "ghunnah",
             "chars": [
-                2
+                2,
+                3,
+                4
             ]
         }
     ],
     "67:12:2": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -880,19 +1258,25 @@
     ],
     "67:12:4": [
         {
-            "type": "tafkheem_ra",
-            "chars": [
-                0
-            ]
-        },
-        {
             "type": "ikhfa_shafawi",
             "chars": [
                 7
             ]
+        },
+        {
+            "type": "tafkheem_ra",
+            "chars": [
+                0
+            ]
         }
     ],
     "67:12:5": [
+        {
+            "type": "silent",
+            "chars": [
+                2
+            ]
+        },
         {
             "type": "idgham_shafawi",
             "chars": [
@@ -924,6 +1308,12 @@
     ],
     "67:12:8": [
         {
+            "type": "ikhfa",
+            "chars": [
+                7
+            ]
+        },
+        {
             "type": "tarqeeq_ra",
             "chars": [
                 4
@@ -936,7 +1326,22 @@
             ]
         }
     ],
+    "67:12:9": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                4
+            ]
+        }
+    ],
     "67:13:1": [
+        {
+            "type": "silent",
+            "chars": [
+                10,
+                11
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -961,6 +1366,19 @@
     ],
     "67:13:4": [
         {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "silent",
+            "chars": [
+                8,
+                9
+            ]
+        },
+        {
             "type": "qalqalah_sughra",
             "chars": [
                 1
@@ -970,6 +1388,15 @@
             "type": "tafkheem_ra",
             "chars": [
                 4
+            ]
+        }
+    ],
+    "67:13:5": [
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                4,
+                5
             ]
         }
     ],
@@ -989,17 +1416,56 @@
     ],
     "67:13:7": [
         {
+            "type": "ghunnah",
+            "chars": [
+                0,
+                1,
+                2
+            ]
+        },
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                5
+            ]
+        },
+        {
             "type": "iqlab",
             "chars": [
                 4
             ]
         }
     ],
+    "67:13:8": [
+        {
+            "type": "iqlab",
+            "chars": [
+                4,
+                5,
+                6,
+                7
+            ]
+        }
+    ],
     "67:13:9": [
+        {
+            "type": "silent",
+            "chars": [
+                6
+            ]
+        },
         {
             "type": "madd_ared",
             "chars": [
                 6
+            ]
+        }
+    ],
+    "67:13:10": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
             ]
         }
     ],
@@ -1019,21 +1485,41 @@
             ]
         }
     ],
+    "67:14:6": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:14:7": [
         {
-            "type": "tarqeeq_ra",
+            "type": "silent",
             "chars": [
-                6
+                0
             ]
         },
         {
             "type": "madd_ared",
             "chars": [
-                5
+                7
+            ]
+        },
+        {
+            "type": "tarqeeq_ra",
+            "chars": [
+                6
             ]
         }
     ],
     "67:15:2": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
         {
             "type": "madd_tabiee",
             "chars": [
@@ -1043,13 +1529,58 @@
     ],
     "67:15:5": [
         {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
             "type": "tafkheem_ra",
             "chars": [
                 4
             ]
         }
     ],
+    "67:15:6": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                6,
+                7
+            ]
+        }
+    ],
+    "67:15:7": [
+        {
+            "type": "silent",
+            "chars": [
+                2
+            ]
+        },
+        {
+            "type": "silent",
+            "chars": [
+                8,
+                9
+            ]
+        }
+    ],
+    "67:15:10": [
+        {
+            "type": "silent",
+            "chars": [
+                7,
+                8
+            ]
+        }
+    ],
     "67:15:12": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                9
+            ]
+        },
         {
             "type": "tarqeeq_ra",
             "chars": [
@@ -1065,6 +1596,12 @@
     ],
     "67:15:14": [
         {
+            "type": "silent",
+            "chars": [
+                9
+            ]
+        },
+        {
             "type": "tafkheem_ra",
             "chars": [
                 7
@@ -1077,12 +1614,44 @@
             ]
         }
     ],
+    "67:15:15": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                0,
+                1,
+                2
+            ]
+        },
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
     "67:16:1": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                6,
+                7,
+                8
+            ]
+        },
         {
             "type": "idgham_shafawi",
             "chars": [
                 4,
                 9
+            ]
+        }
+    ],
+    "67:16:2": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                3
             ]
         }
     ],
@@ -1096,6 +1665,19 @@
         }
     ],
     "67:16:4": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "madd_muttasil",
+            "chars": [
+                7,
+                8
+            ]
+        },
         {
             "type": "idgham_ghunnah",
             "chars": [
@@ -1119,6 +1701,14 @@
             ]
         }
     ],
+    "67:16:8": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:16:10": [
         {
             "type": "tafkheem_ra",
@@ -1133,7 +1723,23 @@
             ]
         }
     ],
+    "67:16:11": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                4
+            ]
+        }
+    ],
     "67:17:2": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                4,
+                5,
+                6
+            ]
+        },
         {
             "type": "idhar_shafawi",
             "chars": [
@@ -1142,7 +1748,28 @@
             ]
         }
     ],
+    "67:17:3": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                3
+            ]
+        }
+    ],
     "67:17:5": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "madd_muttasil",
+            "chars": [
+                7,
+                8
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -1161,6 +1788,13 @@
     ],
     "67:17:9": [
         {
+            "type": "ikhfa",
+            "chars": [
+                6,
+                7
+            ]
+        },
+        {
             "type": "tarqeeq_ra",
             "chars": [
                 4
@@ -1173,6 +1807,14 @@
             ]
         }
     ],
+    "67:17:13": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                2
+            ]
+        }
+    ],
     "67:18:1": [
         {
             "type": "qalqalah_kubra",
@@ -1181,7 +1823,21 @@
             ]
         }
     ],
+    "67:18:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:18:4": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                2
+            ]
+        },
         {
             "type": "qalqalah_sughra",
             "chars": [
@@ -1203,11 +1859,34 @@
             ]
         }
     ],
+    "67:18:8": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                4
+            ]
+        }
+    ],
     "67:19:2": [
+        {
+            "type": "silent",
+            "chars": [
+                6,
+                7
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
                 2
+            ]
+        }
+    ],
+    "67:19:4": [
+        {
+            "type": "silent",
+            "chars": [
+                0
             ]
         }
     ],
@@ -1221,6 +1900,12 @@
         }
     ],
     "67:19:6": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                7
+            ]
+        },
         {
             "type": "qalqalah_sughra",
             "chars": [
@@ -1236,10 +1921,114 @@
             ]
         }
     ],
+    "67:19:10": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                6,
+                7,
+                8
+            ]
+        }
+    ],
+    "67:19:11": [
+        {
+            "type": "silent",
+            "chars": [
+                3
+            ]
+        }
+    ],
+    "67:19:12": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                5
+            ]
+        },
+        {
+            "type": "ghunnah",
+            "chars": [
+                11,
+                12
+            ]
+        }
+    ],
     "67:19:13": [
         {
             "type": "madd_ared",
             "chars": [
+                3
+            ]
+        }
+    ],
+    "67:19:14": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                0
+            ]
+        }
+    ],
+    "67:19:15": [
+        {
+            "type": "iqlab",
+            "chars": [
+                6
+            ]
+        }
+    ],
+    "67:19:16": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
+    "67:20:1": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "67:20:2": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                2
+            ]
+        }
+    ],
+    "67:20:5": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                1,
+                2,
+                3
+            ]
+        }
+    ],
+    "67:20:7": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                1,
+                2,
+                3
+            ]
+        }
+    ],
+    "67:20:8": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                2,
                 3
             ]
         }
@@ -1252,7 +2041,29 @@
             ]
         }
     ],
+    "67:20:10": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                8
+            ]
+        }
+    ],
+    "67:20:12": [
+        {
+            "type": "silent",
+            "chars": [
+                1
+            ]
+        }
+    ],
     "67:20:13": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                1
+            ]
+        },
         {
             "type": "tafkheem_ra",
             "chars": [
@@ -1267,6 +2078,24 @@
             ]
         }
     ],
+    "67:21:1": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "67:21:2": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                2
+            ]
+        }
+    ],
     "67:21:4": [
         {
             "type": "tafkheem_ra",
@@ -1277,6 +2106,12 @@
     ],
     "67:21:7": [
         {
+            "type": "madd_tabiee",
+            "chars": [
+                7
+            ]
+        },
+        {
             "type": "tarqeeq_ra",
             "chars": [
                 0
@@ -1285,9 +2120,24 @@
     ],
     "67:21:10": [
         {
+            "type": "silent",
+            "chars": [
+                4,
+                5
+            ]
+        },
+        {
             "type": "idgham_ghunnah",
             "chars": [
                 4
+            ]
+        }
+    ],
+    "67:21:13": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                3
             ]
         }
     ],
@@ -1301,8 +2151,35 @@
     ],
     "67:22:5": [
         {
+            "type": "madd_munfasil",
+            "chars": [
+                8,
+                9
+            ]
+        },
+        {
             "type": "hamas",
             "chars": [
+                4
+            ]
+        }
+    ],
+    "67:22:6": [
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                6,
+                7,
+                8
+            ]
+        }
+    ],
+    "67:22:7": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                2,
+                3,
                 4
             ]
         }
@@ -1323,6 +2200,47 @@
             ]
         }
     ],
+    "67:22:11": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                4
+            ]
+        }
+    ],
+    "67:22:12": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                9
+            ]
+        }
+    ],
+    "67:23:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                6,
+                7
+            ]
+        }
+    ],
+    "67:23:4": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
     "67:23:5": [
         {
             "type": "qalqalah_sughra",
@@ -1333,9 +2251,37 @@
     ],
     "67:23:7": [
         {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
             "type": "hamas",
             "chars": [
                 4
+            ]
+        }
+    ],
+    "67:23:8": [
+        {
+            "type": "silent",
+            "chars": [
+                2
+            ]
+        },
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                11
+            ]
+        }
+    ],
+    "67:23:9": [
+        {
+            "type": "silent",
+            "chars": [
+                1
             ]
         }
     ],
@@ -1347,6 +2293,22 @@
             ]
         }
     ],
+    "67:23:13": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
+    "67:24:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:24:4": [
         {
             "type": "tafkheem_ra",
@@ -1355,11 +2317,27 @@
             ]
         }
     ],
+    "67:24:6": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
     "67:24:7": [
         {
             "type": "hamas",
             "chars": [
                 3
+            ]
+        }
+    ],
+    "67:24:8": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                8
             ]
         }
     ],
@@ -1373,11 +2351,103 @@
             ]
         }
     ],
+    "67:25:3": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                2
+            ]
+        }
+    ],
+    "67:25:5": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                1,
+                2
+            ]
+        }
+    ],
     "67:25:6": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                1,
+                2,
+                3
+            ]
+        },
         {
             "type": "madd_ared",
             "chars": [
                 5
+            ]
+        }
+    ],
+    "67:25:7": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                1
+            ]
+        },
+        {
+            "type": "madd_ared",
+            "chars": [
+                6
+            ]
+        }
+    ],
+    "67:26:2": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "67:26:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
+    "67:26:4": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                2,
+                3,
+                4
+            ]
+        }
+    ],
+    "67:26:5": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
+    "67:26:6": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                4,
+                5,
+                6
+            ]
+        },
+        {
+            "type": "madd_munfasil",
+            "chars": [
+                9,
+                10
             ]
         }
     ],
@@ -1394,6 +2464,220 @@
             "type": "madd_ared",
             "chars": [
                 3
+            ]
+        }
+    ],
+    "67:26:9": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
+            ]
+        }
+    ],
+    "67:27:1": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                4,
+                5,
+                6
+            ]
+        }
+    ],
+    "67:27:3": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                7
+            ]
+        }
+    ],
+    "67:27:4": [
+        {
+            "type": "madd_muttasil",
+            "chars": [
+                2,
+                3
+            ]
+        }
+    ],
+    "67:27:6": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
+    "67:27:7": [
+        {
+            "type": "silent",
+            "chars": [
+                7,
+                8
+            ]
+        }
+    ],
+    "67:27:9": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                2
+            ]
+        }
+    ],
+    "67:27:11": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "type": "ikhfa_shafawi",
+            "chars": [
+                4,
+                5
+            ]
+        }
+    ],
+    "67:27:12": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                3
+            ]
+        }
+    ],
+    "67:27:13": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                6
+            ]
+        }
+    ],
+    "67:28:5": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        }
+    ],
+    "67:28:12": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                5
+            ]
+        }
+    ],
+    "67:28:15": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                3
+            ]
+        }
+    ],
+    "67:29:3": [
+        {
+            "type": "silent",
+            "chars": [
+                0
+            ]
+        },
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                9
+            ]
+        }
+    ],
+    "67:29:4": [
+        {
+            "type": "ghunnah",
+            "chars": [
+                4,
+                5,
+                6
+            ]
+        }
+    ],
+    "67:29:5": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                3
+            ]
+        }
+    ],
+    "67:29:13": [
+        {
+            "type": "madd_tabiee",
+            "chars": [
+                1
+            ]
+        }
+    ],
+    "67:29:14": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                1
+            ]
+        }
+    ],
+    "67:30:5": [
+        {
+            "type": "madd_muttasil",
+            "chars": [
+                2,
+                3
+            ]
+        }
+    ],
+    "67:30:6": [
+        {
+            "type": "ikhfa",
+            "chars": [
+                5,
+                6
+            ]
+        }
+    ],
+    "67:30:8": [
+        {
+            "type": "ikhfa_shafawi",
+            "chars": [
+                9
+            ]
+        }
+    ],
+    "67:30:9": [
+        {
+            "type": "madd_muttasil",
+            "chars": [
+                4,
+                5
+            ]
+        }
+    ],
+    "67:30:10": [
+        {
+            "type": "madd_ared",
+            "chars": [
+                5
             ]
         }
     ]
